@@ -1,0 +1,22 @@
+kind = "web"
+previewPath = "/"
+title = "SPX Flow Machine"
+version = "1.0.0"
+id = "artifacts/spx-flow-machine"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21050
+
+[services.development]
+run = "pnpm --filter @workspace/spx-flow-machine run dev"
+
+[services.env]
+PORT = "21050"
+BASE_PATH = "/"

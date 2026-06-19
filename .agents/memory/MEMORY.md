@@ -1,0 +1,1 @@
+- [Replit port registration](replit-port-registration.md) — artifact workflow health check fails unless port is in .replit [[ports]]; fix with verifyAndReplaceDotReplit before restart_workflow.

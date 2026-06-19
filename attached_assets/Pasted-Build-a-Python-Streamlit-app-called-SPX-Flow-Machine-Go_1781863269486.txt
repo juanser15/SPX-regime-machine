@@ -1,0 +1,159 @@
+Build a Python/Streamlit app called “SPX Flow Machine”.
+
+Goal:
+Create an offline research dashboard that simulates SPX options flow, classifies flow pressure, builds 1-minute features, labels 5m/15m forward returns, scores bullish/bearish pressure, and evaluates whether high flow scores predict forward returns.
+
+Important:
+Do NOT connect to live APIs yet. Use synthetic/dummy data generated inside the app so the full pipeline works end-to-end. Structure the code so we can later replace dummy data with Databento OPRA data.
+
+App requirements:
+
+1. Project structure:
+- app.py
+- src/
+  - generate_dummy_data.py
+  - classify_trades.py
+  - make_bars.py
+  - build_features.py
+  - label_returns.py
+  - score_flow.py
+  - evaluate_signal.py
+  - plots.py
+- data/
+- README.md
+- requirements.txt
+
+2. Dummy data:
+Generate intraday minute-level data for one trading day:
+- timestamps from 09:30 to 16:00
+- synthetic SPX price path
+- synthetic options trades with:
+  - timestamp
+  - option_type: call/put
+  - side: buy/sell
+  - strike
+  - dte
+  - price
+  - quantity
+  - delta
+  - gamma
+  - notional
+  - is_sweep
+  - moneyness bucket: ATM / OTM / ITM
+
+Make the dummy data semi-realistic:
+- More activity around open and close
+- Occasional large sweeps
+- Inject a weak hidden relationship where positive aggressive call flow and put selling slightly predict positive future returns, and put buying/call selling slightly predict negative future returns.
+
+3. Feature engineering:
+Aggregate trades into 1-minute bars with:
+- call_buy_notional
+- call_sell_notional
+- put_buy_notional
+- put_sell_notional
+- net_delta_notional
+- net_gamma_notional
+- put_call_ratio_dollars
+- sweep_count
+- atm_flow_share
+- short_dte_flow_share
+- large_trade_count
+- total_notional
+
+4. Labels:
+For each minute compute:
+- ret_5m
+- ret_15m
+- direction_5m = 1 if ret_5m > 0 else 0
+- direction_15m = 1 if ret_15m > 0 else 0
+
+5. Flow score:
+Create an interpretable score:
+flow_score =
++ z(call_buy_notional)
+- z(call_sell_notional)
+- z(put_buy_notional)
++ z(put_sell_notional)
++ z(net_delta_notional)
++ 0.5*z(sweep_count)
++ 0.5*z(atm_flow_share)
++ 0.5*z(short_dte_flow_share)
+
+Normalize final score to roughly -10 to +10.
+
+Create:
+- direction = Bullish if score > 2, Bearish if score < -2, else Neutral
+- confidence = Low / Medium / High based on absolute score
+
+6. Evaluation:
+Compute:
+- hit rate when Bullish
+- hit rate when Bearish
+- average 5m return by score bucket
+- average 15m return by score bucket
+- simple long/short strategy:
+  - long SPX for 5m when score > threshold
+  - short SPX for 5m when score < -threshold
+  - flat otherwise
+  - include 1bp cost per trade
+- cumulative PnL
+- daily Sharpe approximation based on minute trade returns
+- max drawdown
+
+7. Streamlit dashboard:
+Create a polished professional dashboard with:
+
+Header:
+“SPX Flow Machine”
+Subtitle:
+“Options flow → directional pressure → 5m/15m forward returns”
+
+Top KPI cards:
+- Current Flow Score
+- Current Direction
+- Confidence
+- Latest SPX Price
+- 5m Hit Rate
+- Strategy PnL
+
+Charts:
+- SPX price over time
+- Flow score over time
+- Flow score vs 5m forward return scatter
+- Average forward return by score bucket
+- Strategy cumulative PnL
+- Notional breakdown: call buy, call sell, put buy, put sell
+
+Tables:
+- Latest 20 flow bars
+- Evaluation summary
+
+Sidebar controls:
+- score threshold
+- horizon selector: 5m / 15m
+- regenerate random seed
+- cost in bps
+
+8. Styling:
+Make it look institutional:
+- clean layout
+- compact metrics
+- explanatory captions
+- no toy-looking UI
+- use Plotly charts
+
+9. README:
+Explain:
+- what the app does
+- what is dummy vs real
+- how Databento OPRA would plug in later
+- main limitations
+- next steps: replace dummy generator with OPRA trades + NBBO, add ML model, add purged CV
+
+10. Code quality:
+- Modular functions
+- Clear docstrings
+- No hardcoded magic everywhere
+- App should run with:
+streamlit run app.py
