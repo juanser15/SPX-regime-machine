@@ -81,6 +81,7 @@ with st.sidebar:
         value=3.0,
         step=0.5,
         help="Flow score magnitude required to enter a long or short position.",
+        key="signal_threshold",
     )
 
     cost_bps = st.slider(

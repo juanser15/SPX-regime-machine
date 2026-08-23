@@ -11,11 +11,13 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import shutil
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
+import numpy as np
 import pandas as pd
 import yfinance as yf
 
@@ -160,6 +162,97 @@ def _deduplicate_series(
     }
 
 
+def _date_ranges(dates: pd.DatetimeIndex) -> list[dict[str, object]]:
+    """Compress consecutive business-date gaps into reportable intervals."""
+
+    if dates.empty:
+        return []
+
+    ranges: list[dict[str, object]] = []
+    start = previous = dates[0]
+    count = 1
+    business_day = pd.offsets.BDay()
+    for date in dates[1:]:
+        if date == previous + business_day:
+            previous = date
+            count += 1
+            continue
+        ranges.append(
+            {
+                "start_date": start.date().isoformat(),
+                "end_date": previous.date().isoformat(),
+                "weekday_count": count,
+            }
+        )
+        start = previous = date
+        count = 1
+    ranges.append(
+        {
+            "start_date": start.date().isoformat(),
+            "end_date": previous.date().isoformat(),
+            "weekday_count": count,
+        }
+    )
+    return ranges
+
+
+def _unexpected_gap_report(valid_dates: pd.Series) -> dict[str, object]:
+    """
+    Report potential weekday gaps without pretending to know exchange holidays.
+
+    Yahoo daily observations do not include weekends or market holidays. This
+    check therefore reports missing weekdays as candidates for review rather
+    than silently treating them as invalid observations.
+    """
+
+    if valid_dates.empty:
+        return {
+            "method": "weekday candidates between first and last valid observation",
+            "potential_weekday_gap_count": 0,
+            "potential_weekday_gap_intervals": [],
+        }
+
+    observed = pd.DatetimeIndex(valid_dates.to_numpy()).sort_values().unique()
+    expected = pd.bdate_range(observed[0], observed[-1])
+    potential_gaps = expected.difference(observed)
+    return {
+        "method": (
+            "weekday candidates between first and last valid observation; "
+            "exchange holidays remain explicit review candidates"
+        ),
+        "potential_weekday_gap_count": int(len(potential_gaps)),
+        "potential_weekday_gap_intervals": _date_ranges(potential_gaps),
+    }
+
+
+def _numeric_quality(raw_close: pd.Series, parsed_close: pd.Series) -> dict[str, object]:
+    """Validate numeric close values and flag large but still valid moves."""
+
+    raw_values = pd.Series(raw_close.to_numpy())
+    numeric_values = pd.Series(parsed_close.to_numpy())
+    non_numeric = raw_values.notna() & numeric_values.isna()
+    non_finite = numeric_values.notna() & ~np.isfinite(numeric_values)
+    non_positive = numeric_values.notna() & np.isfinite(numeric_values) & (
+        numeric_values <= 0
+    )
+    valid_positive = numeric_values[
+        numeric_values.notna()
+        & np.isfinite(numeric_values)
+        & (numeric_values > 0)
+    ]
+    large_moves = valid_positive.pct_change(fill_method=None).abs() > 1.0
+
+    return {
+        "non_numeric_value_count": int(non_numeric.sum()),
+        "non_finite_value_count": int(non_finite.sum()),
+        "non_positive_value_count": int(non_positive.sum()),
+        "daily_move_over_100pct_count": int(large_moves.sum()),
+        "numeric_values_valid": not bool(
+            non_numeric.any() or non_finite.any() or non_positive.any()
+        ),
+    }
+
+
 def _coverage_for_fields(
     canonical: pd.DataFrame, fields: Sequence[str]
 ) -> dict[str, object]:
@@ -241,6 +334,52 @@ def _canonical_checksum(canonical: pd.DataFrame) -> str:
 
     payload = canonical.to_csv(index=False, lineterminator="\n", float_format="%.17g")
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _snapshot_id(canonical_checksum: str, series: Mapping[str, Mapping[str, object]]) -> str:
+    """Create a deterministic identity from canonical and stored raw payloads."""
+
+    raw_checksums = {
+        field: details["raw_payload_sha256"] for field, details in sorted(series.items())
+    }
+    payload = json.dumps(
+        {"canonical_sha256": canonical_checksum, "raw_payload_sha256": raw_checksums},
+        separators=(",", ":"),
+        sort_keys=True,
+    )
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _write_immutable_snapshot(
+    output_path: Path,
+    snapshot_id: str,
+    canonical_path: Path,
+    coverage_path: Path,
+    manifest: Mapping[str, object],
+) -> bool:
+    """Create an append-only snapshot directory, never overwriting prior content."""
+
+    snapshot_path = output_path / "snapshots" / snapshot_id
+    expected_files = (
+        snapshot_path / "canonical_daily.csv",
+        snapshot_path / "coverage_report.json",
+        snapshot_path / "metadata_manifest.json",
+    )
+    if snapshot_path.exists():
+        if not all(path.exists() for path in expected_files):
+            raise RuntimeError(
+                f"Immutable snapshot directory is incomplete: {snapshot_path}"
+            )
+        return False
+
+    snapshot_path.mkdir(parents=True, exist_ok=False)
+    shutil.copyfile(canonical_path, snapshot_path / canonical_path.name)
+    shutil.copyfile(coverage_path, snapshot_path / coverage_path.name)
+    shutil.copytree(output_path / "raw", snapshot_path / "raw")
+    (snapshot_path / "metadata_manifest.json").write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    return True
 
 
 def _write_failure_manifest(
@@ -369,6 +508,22 @@ def ingest_yahoo_daily(
                 ).to_numpy(),
             }
         )
+        numeric_quality = _numeric_quality(raw_flat[close_column], parsed["close"])
+        if not numeric_quality["numeric_values_valid"]:
+            reason = (
+                f"Yahoo Finance returned invalid Close values for required ticker "
+                f"{definition.ticker}: {numeric_quality}."
+            )
+            _write_failure_manifest(
+                output_path,
+                retrieved_at,
+                start,
+                end,
+                series_manifest,
+                definition,
+                reason,
+            )
+            raise YahooDownloadError(reason)
         if parsed["close"].notna().sum() == 0:
             reason = (
                 f"Yahoo Finance returned no usable Close values for required ticker "
@@ -387,6 +542,8 @@ def ingest_yahoo_daily(
 
         deduplicated, quality = _deduplicate_series(parsed)
         valid_dates = deduplicated.loc[deduplicated["close"].notna(), "date"]
+        quality["numeric_validity"] = numeric_quality
+        quality["unexpected_gaps"] = _unexpected_gap_report(valid_dates)
         canonical_parts.append(
             deduplicated.rename(columns={"close": definition.canonical_field})
         )
@@ -427,7 +584,8 @@ def ingest_yahoo_daily(
 
     canonical_to_write = canonical.copy()
     canonical_to_write["date"] = canonical_to_write["date"].dt.date.astype(str)
-    canonical_checksum = _write_csv(canonical_to_write, output_path / "canonical_daily.csv")
+    canonical_path = output_path / "canonical_daily.csv"
+    canonical_checksum = _write_csv(canonical_to_write, canonical_path)
     coverage = build_coverage_report(canonical)
     coverage_path = output_path / "coverage_report.json"
     coverage_path.write_text(
@@ -455,8 +613,32 @@ def ingest_yahoo_daily(
         "coverage_report_file": coverage_path.name,
         "series": series_manifest,
         "coverage": coverage,
+        "calendar_quality": {
+            "canonical_dates_monotonic_ascending": True,
+            "canonical_duplicate_dates": [],
+            "alignment_method": "outer join on observed calendar date only",
+        },
+    }
+    snapshot_id = _snapshot_id(canonical_checksum, series_manifest)
+    manifest["snapshot"] = {
+        "snapshot_id": snapshot_id,
+        "relative_path": str(Path("snapshots") / snapshot_id),
+        "immutable": True,
     }
     manifest_path = output_path / "metadata_manifest.json"
+    manifest_path.write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    snapshot_manifest = dict(manifest)
+    snapshot_manifest["snapshot"] = {**manifest["snapshot"], "created": True}
+    snapshot_created = _write_immutable_snapshot(
+        output_path,
+        snapshot_id,
+        canonical_path,
+        coverage_path,
+        snapshot_manifest,
+    )
+    manifest["snapshot"] = {**manifest["snapshot"], "created": snapshot_created}
     manifest_path.write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
