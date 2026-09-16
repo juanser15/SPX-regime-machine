@@ -1,0 +1,16 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "V7SUIX0bRHdh6Yxv23eck"
+uri = "file://SPX_DAILY_REGIME_HANDOFF.md"
+type = "text"
+title = "SPX Daily Regime Research — Handoff"
+description = "Resumen de datos reales y sintéticos, outputs actuales y propuestas para construir market states usables con Yahoo Finance."
+logical_id = "5ac05b69-10f8-4373-9e54-17fc129e7bd6"
+content_hash = "sha256:03f859abdcba23b51afb6e555eb3bb39b51664707496eec7b4da584c63399917"
+size = 9364
+mtime_ms = 1789538296815
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:a753d1cc-f356-4cda-ad3b-a859eab95554/5ac05b69-10f8-4373-9e54-17fc129e7bd6/b2afa3d1-a3ee-46dc-b8a8-93a3a1249684"
+storage_version_token = "1789538302684758"
+content_type = "text/markdown"
