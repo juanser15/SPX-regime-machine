@@ -5,13 +5,10 @@ import {
   GetSignalHistoryResponse,
   GetSignalProvenanceResponse,
 } from "@workspace/api-zod";
-import { requireSignalToken } from "../middlewares/signalAuth";
 import { loadVerifiedSignals } from "../lib/signalStore";
 
 const router: IRouter = Router();
 const datePattern = /^\d{4}-\d{2}-\d{2}$/;
-
-router.use("/signals", requireSignalToken);
 
 function parseDate(value: unknown): Date | null {
   if (typeof value !== "string" || !datePattern.test(value)) {
