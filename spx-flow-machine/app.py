@@ -19,6 +19,8 @@ Pipeline:
 
 import sys
 import os
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(__file__))
 
@@ -33,6 +35,7 @@ from src.build_features import build_features
 from src.label_returns import label_returns
 from src.score_flow import compute_flow_score
 from src.evaluate_signal import full_evaluation
+from src.daily_signal import DEFAULT_START, load_persisted_signal, refresh_free_signal
 from src import plots
 
 
@@ -48,8 +51,18 @@ st.set_page_config(
 
 # ── Sidebar controls ─────────────────────────────────────────────────────────
 
+FREE_SIGNAL_DIR = Path(__file__).resolve().parent / "data" / "free_signal"
+
 with st.sidebar:
     st.title("⚡ Controls")
+    st.markdown("---")
+    st.subheader("FREE Daily Signal")
+    refresh_free = st.button(
+        "Refresh Yahoo signal",
+        use_container_width=True,
+        help="Download available free daily series and persist a causal signal.",
+    )
+    st.caption("Real daily Yahoo data. No options-chain input.")
     st.markdown("---")
 
     seed = st.number_input(
@@ -94,12 +107,24 @@ with st.sidebar:
     )
 
     st.markdown("---")
-    st.caption("**Data mode:** Synthetic (dummy)")
+    st.caption("**Intraday data mode:** Synthetic (dummy)")
     st.caption("**Replace with:** Databento OPRA ticks")
     st.caption("See README.md for integration notes.")
 
 
 # ── Data pipeline ─────────────────────────────────────────────────────────────
+
+free_refresh_error = None
+if refresh_free:
+    try:
+        exclusive_end = (
+            datetime.now(timezone.utc).date() + timedelta(days=1)
+        ).isoformat()
+        with st.spinner("Refreshing real Yahoo daily signal…"):
+            refresh_free_signal(DEFAULT_START, exclusive_end, FREE_SIGNAL_DIR)
+    except Exception as error:
+        free_refresh_error = str(error)
+
 
 @st.cache_data(show_spinner=False)
 def run_pipeline(seed: int):
@@ -137,6 +162,65 @@ st.markdown(
     "Options flow → directional pressure → 5m/15m forward returns</p>",
     unsafe_allow_html=True,
 )
+st.markdown("---")
+
+
+# ── FREE real-data daily signal ───────────────────────────────────────────────
+
+st.subheader("FREE Daily Risk Signal — Real Yahoo Data")
+if free_refresh_error:
+    st.error(f"Yahoo refresh failed: {free_refresh_error}")
+
+free_latest, free_history = load_persisted_signal(FREE_SIGNAL_DIR)
+if free_latest is None:
+    st.info(
+        "No persisted real daily signal yet. Use “Refresh Yahoo signal” in the sidebar."
+    )
+else:
+    f1, f2, f3, f4, f5 = st.columns(5)
+    f1.metric("Risk signal", str(free_latest["risk_signal"]))
+    f2.metric("Regime", str(free_latest["regime"]))
+    f3.metric(
+        "Overall stress",
+        f"{float(free_latest['overall_stress_score']):.1f}/100",
+    )
+    f4.metric(
+        "Body stress",
+        f"{float(free_latest['body_stress_score']):.1f}/100",
+    )
+    tail_value = free_latest.get("tail_risk_hazard_score")
+    f5.metric(
+        "Tail-risk score",
+        f"{float(tail_value):.1f}/100" if tail_value is not None else "Unavailable",
+    )
+    st.caption(
+        f"As-of {free_latest['date']} · {free_latest['data_lane']} · "
+        f"Confidence {free_latest['confidence']} "
+        f"({float(free_latest['confidence_score']):.1f}/100) · "
+        f"Data quality: {free_latest['data_quality']} · "
+        "Scores are causal empirical ranks, not calibrated probabilities."
+    )
+    st.write(f"**Main drivers:** {free_latest['primary_drivers']}")
+    missing = free_latest.get("missing_inputs")
+    if missing:
+        st.warning(f"Explicitly unavailable at current as-of: {missing}")
+
+    recent = free_history[
+        [
+            "date",
+            "risk_signal",
+            "regime",
+            "overall_stress_score",
+            "body_stress_score",
+            "tail_risk_hazard_score",
+            "confidence",
+            "data_quality",
+        ]
+    ].tail(10)
+    st.dataframe(recent, use_container_width=True, hide_index=True)
+
+st.markdown("---")
+st.caption("The intraday options-flow research below remains fully synthetic.")
 st.markdown("---")
 
 
@@ -323,7 +407,8 @@ st.dataframe(summary_df, use_container_width=True, hide_index=True)
 
 st.markdown("---")
 st.caption(
-    "⚠️  **All data is synthetic.** No live market data is used. "
+    "⚠️  **The intraday options-flow section is synthetic.** "
+    "The FREE daily panel above uses real Yahoo Finance data. "
     "Signal strength is artificially injected (SNR ≈ 0.3). "
     "Results do not reflect real tradeable alpha. "
     "See README.md for how to connect real Databento OPRA data."

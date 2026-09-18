@@ -1,0 +1,20 @@
+{
+  "available_component_count": 8,
+  "body_stress_score": 49.52139510422643,
+  "confidence": "LOW",
+  "confidence_score": 37.67475088449034,
+  "data_lane": "AUGMENTED",
+  "data_quality": "COMPLETE",
+  "data_snapshot_id": "b77a34dbcd4453d8778e3f9163ce7bbb4a8a43f0aed6360aca0bf7acd118e7a8",
+  "date": "2026-09-18",
+  "missing_inputs": "",
+  "model_version": "free_daily_regime_v1",
+  "overall_stress_score": 44.951046328169824,
+  "primary_drivers": "vix_level=7 (reduces stress); vix_curve_inversion=9 (reduces stress); vvix=10 (reduces stress)",
+  "probability_status": "NOT_CALIBRATED",
+  "regime": "TRANSITION / NEUTRAL",
+  "retrieved_at_utc": "2026-09-18T21:55:18+00:00",
+  "risk_signal": "NEUTRAL",
+  "score_type": "causal_empirical_score_not_probability",
+  "tail_risk_hazard_score": 31.24
+}
