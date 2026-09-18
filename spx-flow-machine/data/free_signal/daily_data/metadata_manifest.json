@@ -102,7 +102,7 @@
   "missing_value_policy": "Missing Yahoo observations remain explicit null/NaN; no forward fill or interpolation.",
   "requested_end_date": "2026-09-19",
   "requested_start_date": "2010-01-01",
-  "retrieved_at_utc": "2026-09-18T21:55:18+00:00",
+  "retrieved_at_utc": "2026-09-18T22:03:55+00:00",
   "series": {
     "skew_close": {
       "actual_first_observation_date": "2010-01-04",
@@ -1152,7 +1152,7 @@
       "raw_row_count": 4141,
       "requested_end_date": "2026-09-19",
       "requested_start_date": "2010-01-01",
-      "retrieved_at_utc": "2026-09-18T21:55:18+00:00",
+      "retrieved_at_utc": "2026-09-18T22:03:55+00:00",
       "source": "Yahoo Finance",
       "ticker": "^SKEW",
       "valid_close_count": 4141
@@ -1965,7 +1965,7 @@
       "raw_row_count": 4203,
       "requested_end_date": "2026-09-19",
       "requested_start_date": "2010-01-01",
-      "retrieved_at_utc": "2026-09-18T21:55:18+00:00",
+      "retrieved_at_utc": "2026-09-18T22:03:55+00:00",
       "source": "Yahoo Finance",
       "ticker": "^GSPC",
       "valid_close_count": 4203
@@ -2778,7 +2778,7 @@
       "raw_row_count": 4203,
       "requested_end_date": "2026-09-19",
       "requested_start_date": "2010-01-01",
-      "retrieved_at_utc": "2026-09-18T21:55:18+00:00",
+      "retrieved_at_utc": "2026-09-18T22:03:55+00:00",
       "source": "Yahoo Finance",
       "ticker": "^VIX3M",
       "valid_close_count": 4203
@@ -3551,7 +3551,7 @@
       "raw_row_count": 3951,
       "requested_end_date": "2026-09-19",
       "requested_start_date": "2010-01-01",
-      "retrieved_at_utc": "2026-09-18T21:55:18+00:00",
+      "retrieved_at_utc": "2026-09-18T22:03:55+00:00",
       "source": "Yahoo Finance",
       "ticker": "^VIX9D",
       "valid_close_count": 3951
@@ -4354,7 +4354,7 @@
       "raw_row_count": 4205,
       "requested_end_date": "2026-09-19",
       "requested_start_date": "2010-01-01",
-      "retrieved_at_utc": "2026-09-18T21:55:18+00:00",
+      "retrieved_at_utc": "2026-09-18T22:03:55+00:00",
       "source": "Yahoo Finance",
       "ticker": "^VIX",
       "valid_close_count": 4205
@@ -5207,14 +5207,14 @@
       "raw_row_count": 4194,
       "requested_end_date": "2026-09-19",
       "requested_start_date": "2010-01-01",
-      "retrieved_at_utc": "2026-09-18T21:55:18+00:00",
+      "retrieved_at_utc": "2026-09-18T22:03:55+00:00",
       "source": "Yahoo Finance",
       "ticker": "^VVIX",
       "valid_close_count": 4194
     }
   },
   "snapshot": {
-    "created": true,
+    "created": false,
     "immutable": true,
     "relative_path": "snapshots/b77a34dbcd4453d8778e3f9163ce7bbb4a8a43f0aed6360aca0bf7acd118e7a8",
     "snapshot_id": "b77a34dbcd4453d8778e3f9163ce7bbb4a8a43f0aed6360aca0bf7acd118e7a8"

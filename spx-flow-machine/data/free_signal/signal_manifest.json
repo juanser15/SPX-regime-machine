@@ -15,7 +15,7 @@
     "NEUTRAL": "35 < overall_stress_score < 65",
     "RISK-ON": "overall_stress_score <= 35"
   },
-  "generated_at_utc": "2026-09-18T21:55:21+00:00",
+  "generated_at_utc": "2026-09-18T22:03:59+00:00",
   "input_data_manifest": "daily_data/metadata_manifest.json",
   "input_data_snapshot_id": "b77a34dbcd4453d8778e3f9163ce7bbb4a8a43f0aed6360aca0bf7acd118e7a8",
   "input_source": "Yahoo Finance",
