@@ -31,8 +31,6 @@ paths:
       operationId: getLatestSignal
       tags: [signals]
       summary: Get the latest persisted real signal
-      security:
-        - bearerAuth: []
       responses:
         "200":
           description: Latest signal
@@ -40,14 +38,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LatestSignalResponse"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
         "503":
-          description: Signal integration is not configured
+          description: Verified signal data is unavailable
           content:
             application/json:
               schema:
@@ -57,8 +49,6 @@ paths:
       operationId: getSignalHistory
       tags: [signals]
       summary: Get persisted real signals in an inclusive date range
-      security:
-        - bearerAuth: []
       parameters:
         - name: start
           in: query
@@ -85,14 +75,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
         "503":
-          description: Signal integration is not configured
+          description: Verified signal data is unavailable
           content:
             application/json:
               schema:
@@ -102,8 +86,6 @@ paths:
       operationId: getSignalProvenance
       tags: [signals]
       summary: Get provenance for the persisted real signal dataset
-      security:
-        - bearerAuth: []
       responses:
         "200":
           description: Signal provenance
@@ -111,24 +93,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SignalProvenanceResponse"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
         "503":
-          description: Signal integration is not configured
+          description: Verified signal data is unavailable
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: opaque
   schemas:
     HealthStatus:
       type: object
