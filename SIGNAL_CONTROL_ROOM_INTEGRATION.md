@@ -4,8 +4,17 @@
 
 The API reads the persisted real outputs under
 `spx-flow-machine/data/free_signal`. It does not recalculate the model and does
-not read synthetic intraday data. During the current prototype stage, the
-signal routes do not require authentication.
+not read synthetic intraday data.
+
+All signal routes require:
+
+```http
+Authorization: Bearer <SIGNAL_API_TOKEN>
+```
+
+The token must be stored only in server-side secrets in both systems. The
+Control Room browser must never receive it. Calls must be made by the Control
+Room backend.
 
 ### Routes
 
@@ -45,12 +54,15 @@ Before returning data, the API:
 Configure these values in the Control Room backend:
 
 - `SIGNAL_API_BASE_URL`: the published base URL of this Replit application.
+- `SIGNAL_API_TOKEN`: the same dedicated server-side secret configured here.
 
 Do not use the temporary `.replit.dev` preview URL as a production dependency.
 Obtain the published URL after this application is published.
 
 ## Fail-closed behavior
 
+- Missing server token: `503` with no signal data.
+- Missing or invalid bearer token: `401` with no signal data.
 - Invalid date range: `400`.
 - Missing or checksum-invalid persisted files: `503` with no signal data.
 
