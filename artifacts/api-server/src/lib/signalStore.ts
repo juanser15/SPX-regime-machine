@@ -1,14 +1,21 @@
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { dirname, isAbsolute, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
+const moduleDirectory = dirname(fileURLToPath(import.meta.url));
+const workspaceDirectory = resolve(moduleDirectory, "../../..");
 const defaultSignalDirectory = resolve(
-  process.cwd(),
-  "../../spx-flow-machine/data/free_signal",
+  workspaceDirectory,
+  "spx-flow-machine/data/free_signal",
 );
 
-const signalDirectory =
-  process.env["SIGNAL_DATA_DIR"] ?? defaultSignalDirectory;
+const configuredSignalDirectory = process.env["SIGNAL_DATA_DIR"];
+const signalDirectory = configuredSignalDirectory
+  ? isAbsolute(configuredSignalDirectory)
+    ? configuredSignalDirectory
+    : resolve(workspaceDirectory, configuredSignalDirectory)
+  : defaultSignalDirectory;
 
 type JsonObject = Record<string, unknown>;
 
@@ -219,4 +226,35 @@ export async function loadVerifiedSignals(): Promise<{
     dataManifest,
     coverage,
   };
+}
+
+export type SignalArtifactDiagnostic =
+  | {
+      status: "ready";
+      model_version: string;
+      history_row_count: number;
+      history_first_date: string;
+      history_last_date: string;
+    }
+  | {
+      status: "unavailable";
+      reason: "missing_or_invalid";
+    };
+
+export async function getSignalArtifactDiagnostic(): Promise<SignalArtifactDiagnostic> {
+  try {
+    const store = await loadVerifiedSignals();
+    return {
+      status: "ready",
+      model_version: String(store.signalManifest["model_version"]),
+      history_row_count: store.history.length,
+      history_first_date: store.history[0]?.date ?? "",
+      history_last_date: store.history.at(-1)?.date ?? "",
+    };
+  } catch {
+    return {
+      status: "unavailable",
+      reason: "missing_or_invalid",
+    };
+  }
 }

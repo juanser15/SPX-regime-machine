@@ -106,8 +106,46 @@ components:
       properties:
         status:
           type: string
+          enum: [ok, degraded]
+        signal_artifacts:
+          oneOf:
+            - $ref: "#/components/schemas/SignalArtifactsReady"
+            - $ref: "#/components/schemas/SignalArtifactsUnavailable"
       required:
         - status
+        - signal_artifacts
+    SignalArtifactsReady:
+      type: object
+      required:
+        - status
+        - model_version
+        - history_row_count
+        - history_first_date
+        - history_last_date
+      properties:
+        status:
+          type: string
+          const: ready
+        model_version:
+          type: string
+        history_row_count:
+          type: integer
+        history_first_date:
+          type: string
+        history_last_date:
+          type: string
+    SignalArtifactsUnavailable:
+      type: object
+      required:
+        - status
+        - reason
+      properties:
+        status:
+          type: string
+          const: unavailable
+        reason:
+          type: string
+          const: missing_or_invalid
     ErrorResponse:
       type: object
       required: [error]

@@ -1,5 +1,6 @@
 import app from "./app";
 import { logger } from "./lib/logger";
+import { getSignalArtifactDiagnostic } from "./lib/signalStore";
 
 const rawPort = process.env["PORT"];
 
@@ -13,6 +14,13 @@ const port = Number(rawPort);
 
 if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
+}
+
+const signalArtifacts = await getSignalArtifactDiagnostic();
+if (signalArtifacts.status === "ready") {
+  logger.info({ signalArtifacts }, "Verified signal artifacts ready");
+} else {
+  logger.error({ signalArtifacts }, "Verified signal artifacts unavailable");
 }
 
 app.listen(port, (err) => {
