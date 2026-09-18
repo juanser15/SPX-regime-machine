@@ -13,7 +13,7 @@
   "primary_drivers": "vix_level=7 (reduces stress); vix_curve_inversion=9 (reduces stress); vvix=10 (reduces stress)",
   "probability_status": "NOT_CALIBRATED",
   "regime": "TRANSITION / NEUTRAL",
-  "retrieved_at_utc": "2026-09-18T21:55:18+00:00",
+  "retrieved_at_utc": "2026-09-18T22:03:55+00:00",
   "risk_signal": "NEUTRAL",
   "score_type": "causal_empirical_score_not_probability",
   "tail_risk_hazard_score": 31.24

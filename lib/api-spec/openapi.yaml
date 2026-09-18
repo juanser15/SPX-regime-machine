@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: signals
+    description: Read-only access to persisted real daily regime signals
 paths:
   /healthz:
     get:
@@ -24,7 +26,109 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /signals/latest:
+    get:
+      operationId: getLatestSignal
+      tags: [signals]
+      summary: Get the latest persisted real signal
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Latest signal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LatestSignalResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Signal integration is not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /signals/history:
+    get:
+      operationId: getSignalHistory
+      tags: [signals]
+      summary: Get persisted real signals in an inclusive date range
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: start
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: end
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Signal history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignalHistoryResponse"
+        "400":
+          description: Invalid date range
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Signal integration is not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /signals/provenance:
+    get:
+      operationId: getSignalProvenance
+      tags: [signals]
+      summary: Get provenance for the persisted real signal dataset
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Signal provenance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignalProvenanceResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Signal integration is not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: opaque
   schemas:
     HealthStatus:
       type: object
@@ -33,4 +137,208 @@ components:
           type: string
       required:
         - status
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+    SignalObservation:
+      type: object
+      required:
+        - date
+        - data_lane
+        - regime
+        - risk_signal
+        - overall_stress_score
+        - body_stress_score
+        - tail_risk_hazard_score
+        - confidence_score
+        - confidence
+        - data_quality
+        - available_component_count
+        - missing_inputs
+        - primary_drivers
+        - score_type
+        - probability_status
+      properties:
+        date:
+          type: string
+          format: date
+        data_lane:
+          type: string
+        regime:
+          type: string
+        risk_signal:
+          type: string
+          enum: [RISK-ON, NEUTRAL, DE-RISK]
+        overall_stress_score:
+          type: number
+        body_stress_score:
+          type: number
+        tail_risk_hazard_score:
+          type: [number, "null"]
+        confidence_score:
+          type: number
+        confidence:
+          type: string
+          enum: [LOW, MEDIUM, HIGH]
+        data_quality:
+          type: string
+        available_component_count:
+          type: integer
+        missing_inputs:
+          type: string
+        primary_drivers:
+          type: string
+        score_type:
+          type: string
+        probability_status:
+          type: string
+          enum: [NOT_CALIBRATED]
+    LatestSignalResponse:
+      type: object
+      required:
+        - observation_mode
+        - live_recorded
+        - model_version
+        - retrieved_at_utc
+        - data_snapshot_id
+        - data
+      properties:
+        observation_mode:
+          type: string
+          enum: [historical_reconstruction]
+        live_recorded:
+          type: boolean
+          const: false
+        model_version:
+          type: string
+        retrieved_at_utc:
+          type: string
+          format: date-time
+        data_snapshot_id:
+          type: string
+        data:
+          $ref: "#/components/schemas/SignalObservation"
+    SignalHistoryResponse:
+      type: object
+      required:
+        - observation_mode
+        - live_recorded
+        - model_version
+        - start
+        - end
+        - count
+        - data
+      properties:
+        observation_mode:
+          type: string
+          enum: [historical_reconstruction]
+        live_recorded:
+          type: boolean
+          const: false
+        model_version:
+          type: string
+        start:
+          type: string
+          format: date
+        end:
+          type: string
+          format: date
+        count:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/SignalObservation"
+    SignalSeriesProvenance:
+      type: object
+      required:
+        - field
+        - ticker
+        - source
+        - first_valid_date
+        - last_valid_date
+        - observations
+        - raw_payload_sha256
+      properties:
+        field:
+          type: string
+        ticker:
+          type: string
+        source:
+          type: string
+        first_valid_date:
+          type: string
+          format: date
+        last_valid_date:
+          type: string
+          format: date
+        observations:
+          type: integer
+        raw_payload_sha256:
+          type: string
+    SignalProvenanceResponse:
+      type: object
+      required:
+        - observation_mode
+        - live_recorded
+        - source
+        - model_version
+        - requested_start_date
+        - requested_end_date
+        - retrieved_at_utc
+        - history_first_date
+        - history_last_date
+        - history_row_count
+        - history_sha256
+        - input_data_snapshot_id
+        - signal_snapshot_id
+        - probability_status
+        - score_semantics
+        - series
+      properties:
+        observation_mode:
+          type: string
+          enum: [historical_reconstruction]
+        live_recorded:
+          type: boolean
+          const: false
+        source:
+          type: string
+        model_version:
+          type: string
+        requested_start_date:
+          type: string
+          format: date
+        requested_end_date:
+          type: string
+          format: date
+        retrieved_at_utc:
+          type: string
+          format: date-time
+        history_first_date:
+          type: string
+          format: date
+        history_last_date:
+          type: string
+          format: date
+        history_row_count:
+          type: integer
+        history_sha256:
+          type: string
+        input_data_snapshot_id:
+          type: string
+        signal_snapshot_id:
+          type: string
+        probability_status:
+          type: string
+          enum: [NOT_CALIBRATED]
+        score_semantics:
+          type: string
+        series:
+          type: array
+          items:
+            $ref: "#/components/schemas/SignalSeriesProvenance"
 
