@@ -5,7 +5,11 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { HealthStatusStatus } from './healthStatusStatus';
+import type { SignalArtifactsReady } from './signalArtifactsReady';
+import type { SignalArtifactsUnavailable } from './signalArtifactsUnavailable';
 
 export interface HealthStatus {
-  status: string;
+  status: HealthStatusStatus;
+  signal_artifacts: SignalArtifactsReady | SignalArtifactsUnavailable;
 }

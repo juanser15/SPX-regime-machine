@@ -5,8 +5,31 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export type HealthStatusStatus = typeof HealthStatusStatus[keyof typeof HealthStatusStatus];
+
+
+export const HealthStatusStatus = {
+  ok: 'ok',
+  degraded: 'degraded',
+} as const;
+
+export interface SignalArtifactsReady {
+  status: 'ready';
+  model_version: string;
+  history_row_count: number;
+  history_first_date: string;
+  history_last_date: string;
+}
+
+export const SignalArtifactsUnavailableValue = {
+  status: 'unavailable',
+  reason: 'missing_or_invalid',
+} as const;
+export type SignalArtifactsUnavailable = typeof SignalArtifactsUnavailableValue;
+
 export interface HealthStatus {
-  status: string;
+  status: HealthStatusStatus;
+  signal_artifacts: SignalArtifactsReady | SignalArtifactsUnavailable;
 }
 
 export interface ErrorResponse {

@@ -13,7 +13,17 @@ import * as zod from 'zod';
  * @summary Health check
  */
 export const HealthCheckResponse = zod.object({
-  "status": zod.string()
+  "status": zod.enum(['ok', 'degraded']),
+  "signal_artifacts": zod.union([zod.object({
+  "status": zod.literal("ready"),
+  "model_version": zod.string(),
+  "history_row_count": zod.number(),
+  "history_first_date": zod.string(),
+  "history_last_date": zod.string()
+}),zod.object({
+  "status": zod.literal("unavailable"),
+  "reason": zod.literal("missing_or_invalid")
+})])
 })
 
 
