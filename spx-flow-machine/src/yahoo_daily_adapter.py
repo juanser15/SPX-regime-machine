@@ -429,6 +429,7 @@ def ingest_yahoo_daily(
     end: str,
     output_dir: str | Path,
     fetcher: Fetcher = yahoo_download,
+    allow_missing_optional: bool = False,
 ) -> tuple[pd.DataFrame, dict[str, object]]:
     """
     Download, audit, align, and persist the daily canonical Yahoo Finance table.
@@ -444,13 +445,46 @@ def ingest_yahoo_daily(
 
     canonical_parts: list[pd.DataFrame] = []
     series_manifest: dict[str, dict[str, object]] = {}
+    unavailable_series: dict[str, dict[str, object]] = {}
 
     for definition in SERIES:
-        raw = fetcher(definition.ticker, start, end)
+        try:
+            raw = fetcher(definition.ticker, start, end)
+        except Exception as error:
+            reason = (
+                f"Yahoo Finance download failed for {definition.ticker} "
+                f"for requested range {start} to {end}: {error}"
+            )
+            if allow_missing_optional and definition.ticker != "^GSPC":
+                unavailable_series[definition.canonical_field] = {
+                    "source": SOURCE_NAME,
+                    "ticker": definition.ticker,
+                    "lane": definition.lane,
+                    "reason": reason,
+                }
+                continue
+            _write_failure_manifest(
+                output_path,
+                retrieved_at,
+                start,
+                end,
+                series_manifest,
+                definition,
+                reason,
+            )
+            raise YahooDownloadError(reason) from error
         if not isinstance(raw, pd.DataFrame):
             reason = (
                 f"Yahoo Finance download for {definition.ticker} did not return a DataFrame."
             )
+            if allow_missing_optional and definition.ticker != "^GSPC":
+                unavailable_series[definition.canonical_field] = {
+                    "source": SOURCE_NAME,
+                    "ticker": definition.ticker,
+                    "lane": definition.lane,
+                    "reason": reason,
+                }
+                continue
             _write_failure_manifest(
                 output_path,
                 retrieved_at,
@@ -466,6 +500,14 @@ def ingest_yahoo_daily(
                 f"Yahoo Finance returned no rows for required ticker {definition.ticker} "
                 f"for requested range {start} to {end}."
             )
+            if allow_missing_optional and definition.ticker != "^GSPC":
+                unavailable_series[definition.canonical_field] = {
+                    "source": SOURCE_NAME,
+                    "ticker": definition.ticker,
+                    "lane": definition.lane,
+                    "reason": reason,
+                }
+                continue
             _write_failure_manifest(
                 output_path,
                 retrieved_at,
@@ -529,6 +571,14 @@ def ingest_yahoo_daily(
                 f"Yahoo Finance returned no usable Close values for required ticker "
                 f"{definition.ticker} for requested range {start} to {end}."
             )
+            if allow_missing_optional and definition.ticker != "^GSPC":
+                unavailable_series[definition.canonical_field] = {
+                    "source": SOURCE_NAME,
+                    "ticker": definition.ticker,
+                    "lane": definition.lane,
+                    "reason": reason,
+                }
+                continue
             _write_failure_manifest(
                 output_path,
                 retrieved_at,
@@ -574,6 +624,9 @@ def ingest_yahoo_daily(
     for part in canonical_parts[1:]:
         canonical = canonical.merge(part, on="date", how="outer", sort=False)
 
+    for column in CANONICAL_COLUMNS:
+        if column not in canonical:
+            canonical[column] = float("nan")
     canonical = canonical.loc[:, list(CANONICAL_COLUMNS)].sort_values(
         "date", kind="mergesort"
     ).reset_index(drop=True)
@@ -594,6 +647,7 @@ def ingest_yahoo_daily(
 
     manifest: dict[str, object] = {
         "adapter": "spx_daily_regime_yahoo_adapter",
+        "status": "degraded" if unavailable_series else "complete",
         "source": SOURCE_NAME,
         "retrieved_at_utc": retrieved_at,
         "requested_start_date": start,
@@ -612,6 +666,7 @@ def ingest_yahoo_daily(
         "canonical_sha256": canonical_checksum,
         "coverage_report_file": coverage_path.name,
         "series": series_manifest,
+        "unavailable_series": unavailable_series,
         "coverage": coverage,
         "calendar_quality": {
             "canonical_dates_monotonic_ascending": True,

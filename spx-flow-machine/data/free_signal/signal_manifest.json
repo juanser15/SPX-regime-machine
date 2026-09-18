@@ -1,0 +1,32 @@
+{
+  "available_series": [
+    "skew_close",
+    "spx_close",
+    "vix3m_close",
+    "vix9d_close",
+    "vix_close",
+    "vvix_close"
+  ],
+  "causality": "Trailing-only rolling calculations; no smoothing, Viterbi, future labels, imputation, or full-sample parameter estimation.",
+  "current_missing_inputs": [],
+  "data_lane": "AUGMENTED",
+  "decision_bands": {
+    "DE-RISK": "overall_stress_score >= 65",
+    "NEUTRAL": "35 < overall_stress_score < 65",
+    "RISK-ON": "overall_stress_score <= 35"
+  },
+  "generated_at_utc": "2026-09-18T21:55:21+00:00",
+  "input_data_manifest": "daily_data/metadata_manifest.json",
+  "input_data_snapshot_id": "b77a34dbcd4453d8778e3f9163ce7bbb4a8a43f0aed6360aca0bf7acd118e7a8",
+  "input_source": "Yahoo Finance",
+  "latest_signal_file": "latest_signal.json",
+  "model_version": "free_daily_regime_v1",
+  "requested_end_date": "2026-09-19",
+  "requested_start_date": "2010-01-01",
+  "score_semantics": "Empirical trailing percentile scores on a 0-100 stress scale; not calibrated probabilities.",
+  "signal_history_file": "signal_history.csv",
+  "signal_history_sha256": "595bc0678cfc824cf86e3858269fade4cb7340235ccbe07de25cab96cc053ecd",
+  "signal_snapshot_id": "719f075f879896006f7f2cf02a0bfd81c8979ca0175166026e28412d8f311b9d",
+  "status": "complete",
+  "unavailable_series": {}
+}

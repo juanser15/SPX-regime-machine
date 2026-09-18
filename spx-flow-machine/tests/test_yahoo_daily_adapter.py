@@ -158,6 +158,26 @@ class YahooDailyAdapterTests(unittest.TestCase):
             self.assertEqual(failure_manifest["failure"]["ticker"], "^VVIX")
             self.assertFalse(failure_manifest["canonical_output_written"])
 
+    def test_free_mode_degrades_when_optional_series_is_unavailable(self):
+        def partial_fetcher(ticker, start, end):
+            if ticker in {"^VIX9D", "^VVIX"}:
+                return pd.DataFrame()
+            return self.fetcher(ticker, start, end)
+
+        with tempfile.TemporaryDirectory() as output_dir:
+            canonical, manifest = adapter.ingest_yahoo_daily(
+                "2024-01-02",
+                "2024-01-05",
+                output_dir,
+                fetcher=partial_fetcher,
+                allow_missing_optional=True,
+            )
+            self.assertEqual(manifest["status"], "degraded")
+            self.assertIn("vix9d_close", manifest["unavailable_series"])
+            self.assertIn("vvix_close", manifest["unavailable_series"])
+            self.assertTrue(canonical["vix9d_close"].isna().all())
+            self.assertTrue(canonical["vvix_close"].isna().all())
+
     def test_invalid_numeric_close_fails_loudly(self):
         self.payloads["^VIX"] = make_payload(
             ["2024-01-02", "2024-01-03", "2024-01-04"], [15.0, "invalid", 16.0]
