@@ -13,6 +13,28 @@ tags:
   - name: signals
     description: Read-only access to persisted real daily regime signals
 paths:
+  /capabilities:
+    get:
+      operationId: getCapabilities
+      tags: [signals]
+      summary: Describe the signal contract and point-in-time guarantees
+      responses:
+        "200":
+          description: Signal API capabilities
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [contract_version, observation_modes, point_in_time_fields, pagination, filters]
+                properties:
+                  contract_version: {type: string}
+                  observation_modes: {type: array, items: {type: string}}
+                  live_recorded: {type: boolean}
+                  point_in_time_fields: {type: array, items: {type: string}}
+                  ordering: {type: array, items: {type: string}, example: [session_date, event_id]}
+                  filters: {type: array, items: {type: string}}
+                  pagination: {type: object, additionalProperties: true}
+                  freshness_sla: {type: string}
   /healthz:
     get:
       operationId: healthCheck
@@ -62,6 +84,22 @@ paths:
           schema:
             type: string
             format: date
+        - name: model_version
+          in: query
+          required: false
+          schema: {type: string}
+        - name: as_of
+          in: query
+          required: false
+          schema: {type: string, format: date-time}
+        - name: limit
+          in: query
+          required: false
+          schema: {type: integer, minimum: 1, maximum: 1000, default: 100}
+        - name: cursor
+          in: query
+          required: false
+          schema: {type: string}
       responses:
         "200":
           description: Signal history
@@ -155,6 +193,20 @@ components:
     SignalObservation:
       type: object
       required:
+        - event_id
+        - contract_version
+        - session_date
+        - market_as_of
+        - available_at
+        - computed_at
+        - source_retrieved_at
+        - model_version
+        - input_data_snapshot_id
+        - signal_snapshot_id
+        - input_checksum
+        - signal_checksum
+        - observation_mode
+        - live_recorded
         - date
         - data_lane
         - regime
@@ -171,6 +223,21 @@ components:
         - score_type
         - probability_status
       properties:
+        event_id: {type: string}
+        contract_version: {type: string}
+        session_date: {type: string, format: date}
+        market_as_of: {type: string, format: date-time}
+        available_at: {type: string, format: date-time}
+        computed_at: {type: string, format: date-time}
+        source_retrieved_at: {type: string, format: date-time}
+        model_version: {type: string}
+        input_data_snapshot_id: {type: string}
+        signal_snapshot_id: {type: string}
+        input_checksum: {type: string}
+        signal_checksum: {type: string}
+        row_checksum: {type: string}
+        observation_mode: {type: string, enum: [LIVE_REGISTERED, HISTORICAL_RECONSTRUCTION]}
+        live_recorded: {type: boolean}
         date:
           type: string
           format: date
@@ -217,7 +284,7 @@ components:
       properties:
         observation_mode:
           type: string
-          enum: [historical_reconstruction]
+          enum: [LIVE_REGISTERED, HISTORICAL_RECONSTRUCTION]
         live_recorded:
           type: boolean
           const: false
@@ -243,7 +310,7 @@ components:
       properties:
         observation_mode:
           type: string
-          enum: [historical_reconstruction]
+          enum: [LIVE_REGISTERED, HISTORICAL_RECONSTRUCTION]
         live_recorded:
           type: boolean
           const: false
@@ -310,7 +377,7 @@ components:
       properties:
         observation_mode:
           type: string
-          enum: [historical_reconstruction]
+          enum: [LIVE_REGISTERED, HISTORICAL_RECONSTRUCTION]
         live_recorded:
           type: boolean
           const: false

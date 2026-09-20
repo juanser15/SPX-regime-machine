@@ -4,13 +4,11 @@ import * as schema from "./schema";
 
 const { Pool } = pg;
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
-}
-
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+// Keep module loading deterministic when the database is not provisioned; reads
+// will fail with a normal connection error and the API can return 503.
+export const pool = new Pool({
+  connectionString: process.env.DATABASE_URL ?? "postgresql://invalid:invalid@127.0.0.1:1/invalid",
+});
 export const db = drizzle(pool, { schema });
 
 export * from "./schema";
