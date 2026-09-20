@@ -167,13 +167,13 @@ function observationsMatch(
   return textMatches && numericMatches;
 }
 
-async function readJson(fileName: string): Promise<JsonObject> {
+async function readJson(directory: string, fileName: string): Promise<JsonObject> {
   return JSON.parse(
-    await readFile(resolve(signalDirectory, fileName), "utf8"),
+    await readFile(resolve(directory, fileName), "utf8"),
   ) as JsonObject;
 }
 
-export async function loadVerifiedSignals(): Promise<{
+export async function loadVerifiedSignalsFrom(directory: string): Promise<{
   latest: SignalObservation;
   latestMetadata: JsonObject;
   history: SignalObservation[];
@@ -182,10 +182,10 @@ export async function loadVerifiedSignals(): Promise<{
   coverage: JsonObject;
 }> {
   const historyPayload = await readFile(
-    resolve(signalDirectory, "signal_history.csv"),
+    resolve(directory, "signal_history.csv"),
     "utf8",
   );
-  const signalManifest = await readJson("signal_manifest.json");
+  const signalManifest = await readJson(directory, "signal_manifest.json");
   const expectedHash = requiredString(
     signalManifest,
     "signal_history_sha256",
@@ -205,7 +205,7 @@ export async function loadVerifiedSignals(): Promise<{
     ),
   );
 
-  const latestMetadata = await readJson("latest_signal.json");
+  const latestMetadata = await readJson(directory, "latest_signal.json");
   const latest = toObservation(latestMetadata);
   const lastHistorical = history.at(-1);
   if (!lastHistorical || !observationsMatch(latest, lastHistorical)) {
@@ -215,8 +215,8 @@ export async function loadVerifiedSignals(): Promise<{
   }
 
   const [dataManifest, coverage] = await Promise.all([
-    readJson("daily_data/metadata_manifest.json"),
-    readJson("daily_data/coverage_report.json"),
+    readJson(directory, "daily_data/metadata_manifest.json"),
+    readJson(directory, "daily_data/coverage_report.json"),
   ]);
   return {
     latest,
@@ -226,6 +226,10 @@ export async function loadVerifiedSignals(): Promise<{
     dataManifest,
     coverage,
   };
+}
+
+export async function loadVerifiedSignals() {
+  return loadVerifiedSignalsFrom(signalDirectory);
 }
 
 export type SignalArtifactDiagnostic =

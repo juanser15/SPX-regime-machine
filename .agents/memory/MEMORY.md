@@ -1,2 +1,3 @@
 - [Replit port registration](replit-port-registration.md) — artifact workflow health check fails unless port is in .replit [[ports]]; fix with verifyAndReplaceDotReplit before restart_workflow.
 - [Artifact runtime paths](artifact-runtime-paths.md) — production runs from workspace root while pnpm-filtered development runs from package cwd; never anchor persisted assets to process.cwd().
+- [Signal point-in-time policy](signal-point-in-time-policy.md) — reconstructed rows use conservative availability; only timely newly observed sessions qualify as live.
