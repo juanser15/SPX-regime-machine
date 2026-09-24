@@ -1,231 +1,119 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: regime.signal.v3 read-only contract
 servers:
   - url: /api
-    description: Base API path
 tags:
-  - name: health
-    description: Health operations
   - name: signals
-    description: Read-only access to persisted real daily regime signals
+  - name: health
 paths:
   /capabilities:
     get:
       operationId: getCapabilities
       tags: [signals]
-      summary: Describe the signal contract and point-in-time guarantees
       responses:
-        "200":
-          description: Signal API capabilities
-          content:
-            application/json:
-              schema:
-                type: object
-                required: [contract_version, observation_modes, point_in_time_fields, pagination, filters]
-                properties:
-                  contract_version: {type: string}
-                  observation_modes: {type: array, items: {type: string}}
-                  live_recorded: {type: boolean}
-                  point_in_time_fields: {type: array, items: {type: string}}
-                  ordering: {type: array, items: {type: string}, example: [session_date, event_id]}
-                  filters: {type: array, items: {type: string}}
-                  pagination: {type: object, additionalProperties: true}
-                  freshness_sla: {type: string}
-  /healthz:
+        "200": {description: Capabilities, content: {application/json: {schema: {$ref: "#/components/schemas/Capabilities"}}}}
+  /signals/catalog:
     get:
-      operationId: healthCheck
-      tags: [health]
-      summary: Health check
-      description: Returns server health status
+      operationId: getSignalCatalog
+      tags: [signals]
       responses:
-        "200":
-          description: Healthy
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HealthStatus"
+        "200": {description: Catalog, content: {application/json: {schema: {$ref: "#/components/schemas/Catalog"}}}}
+        "503": {$ref: "#/components/responses/Unavailable"}
   /signals/latest:
     get:
       operationId: getLatestSignal
       tags: [signals]
-      summary: Get the latest persisted real signal
       responses:
-        "200":
-          description: Latest signal
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/LatestSignalResponse"
-        "503":
-          description: Verified signal data is unavailable
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
+        "200": {description: Operational live signal, content: {application/json: {schema: {$ref: "#/components/schemas/Latest"}}}}
+        "503": {$ref: "#/components/responses/Unavailable"}
   /signals/history:
     get:
       operationId: getSignalHistory
       tags: [signals]
-      summary: Get persisted real signals in an inclusive date range
       parameters:
-        - name: start
-          in: query
-          required: true
-          schema:
-            type: string
-            format: date
-        - name: end
-          in: query
-          required: true
-          schema:
-            type: string
-            format: date
-        - name: model_version
-          in: query
-          required: false
-          schema: {type: string}
-        - name: as_of
-          in: query
-          required: false
-          schema: {type: string, format: date-time}
-        - name: limit
-          in: query
-          required: false
-          schema: {type: integer, minimum: 1, maximum: 1000, default: 100}
-        - name: cursor
-          in: query
-          required: false
-          schema: {type: string}
+        - {$ref: "#/components/parameters/Start"}
+        - {$ref: "#/components/parameters/End"}
+        - {$ref: "#/components/parameters/Model"}
+        - {$ref: "#/components/parameters/AsOf"}
+        - {$ref: "#/components/parameters/Limit"}
+        - {$ref: "#/components/parameters/Cursor"}
       responses:
-        "200":
-          description: Signal history
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SignalHistoryResponse"
-        "400":
-          description: Invalid date range
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "503":
-          description: Verified signal data is unavailable
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
+        "200": {description: Historical research series, content: {application/json: {schema: {$ref: "#/components/schemas/History"}}}}
+        "400": {$ref: "#/components/responses/BadRequest"}
+        "503": {$ref: "#/components/responses/Unavailable"}
+  /signals/as-of:
+    get:
+      operationId: getSignalAsOf
+      tags: [signals]
+      parameters:
+        - {$ref: "#/components/parameters/AsOfRequired"}
+        - {$ref: "#/components/parameters/Start"}
+        - {$ref: "#/components/parameters/End"}
+        - {$ref: "#/components/parameters/Model"}
+        - {$ref: "#/components/parameters/Limit"}
+        - {$ref: "#/components/parameters/Cursor"}
+      responses:
+        "200": {description: Point-in-time research series, content: {application/json: {schema: {$ref: "#/components/schemas/History"}}}}
+        "400": {$ref: "#/components/responses/BadRequest"}
+        "503": {$ref: "#/components/responses/Unavailable"}
   /signals/provenance:
     get:
       operationId: getSignalProvenance
       tags: [signals]
-      summary: Get provenance for the persisted real signal dataset
       responses:
-        "200":
-          description: Signal provenance
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SignalProvenanceResponse"
-        "503":
-          description: Verified signal data is unavailable
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
+        "200": {description: Provenance, content: {application/json: {schema: {$ref: "#/components/schemas/Provenance"}}}}
+        "503": {$ref: "#/components/responses/Unavailable"}
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      responses:
+        "200": {description: Healthy or stale, content: {application/json: {schema: {$ref: "#/components/schemas/HealthStatus"}}}}
+        "503": {description: Error health, content: {application/json: {schema: {$ref: "#/components/schemas/HealthStatus"}}}}
 components:
+  parameters:
+    Start: {name: start, in: query, required: false, schema: {type: string, format: date}}
+    End: {name: end, in: query, required: false, schema: {type: string, format: date}}
+    Model: {name: model_version, in: query, required: false, schema: {type: string}}
+    AsOf: {name: as_of, in: query, required: false, schema: {type: string, format: date-time}}
+    AsOfRequired: {name: as_of, in: query, required: true, schema: {type: string, format: date-time}}
+    Limit: {name: limit, in: query, required: false, schema: {type: integer, minimum: 1, maximum: 1000, default: 100}}
+    Cursor: {name: cursor, in: query, required: false, schema: {type: string}}
+  responses:
+    BadRequest: {description: Invalid request, content: {application/json: {schema: {$ref: "#/components/schemas/Error"}}}}
+    Unavailable: {description: Unavailable, content: {application/json: {schema: {$ref: "#/components/schemas/Error"}}}}
   schemas:
-    HealthStatus:
-      type: object
-      properties:
-        status:
-          type: string
-          enum: [ok, degraded]
-        signal_artifacts:
-          oneOf:
-            - $ref: "#/components/schemas/SignalArtifactsReady"
-            - $ref: "#/components/schemas/SignalArtifactsUnavailable"
-      required:
-        - status
-        - signal_artifacts
-    SignalArtifactsReady:
-      type: object
-      required:
-        - status
-        - model_version
-        - history_row_count
-        - history_first_date
-        - history_last_date
-      properties:
-        status:
-          type: string
-          const: ready
-        model_version:
-          type: string
-        history_row_count:
-          type: integer
-        history_first_date:
-          type: string
-        history_last_date:
-          type: string
-    SignalArtifactsUnavailable:
-      type: object
-      required:
-        - status
-        - reason
-      properties:
-        status:
-          type: string
-          const: unavailable
-        reason:
-          type: string
-          const: missing_or_invalid
-    ErrorResponse:
+    Error:
       type: object
       required: [error]
       properties:
         error:
-          type: string
-    SignalObservation:
+          type: object
+          required: [code, message]
+          properties: {code: {type: string}, message: {type: string}}
+    Capabilities:
       type: object
-      required:
-        - event_id
-        - contract_version
-        - session_date
-        - market_as_of
-        - available_at
-        - computed_at
-        - source_retrieved_at
-        - model_version
-        - input_data_snapshot_id
-        - signal_snapshot_id
-        - input_checksum
-        - signal_checksum
-        - observation_mode
-        - live_recorded
-        - date
-        - data_lane
-        - regime
-        - risk_signal
-        - overall_stress_score
-        - body_stress_score
-        - tail_risk_hazard_score
-        - confidence_score
-        - confidence
-        - data_quality
-        - available_component_count
-        - missing_inputs
-        - primary_drivers
-        - score_type
-        - probability_status
+      required: [contract_version, observation_modes, live_recorded, point_in_time_fields, ordering, filters, pagination, freshness_sla]
+      properties:
+        contract_version: {type: string, const: regime.signal.v3}
+        observation_modes: {type: array, items: {type: string, enum: [LIVE_REGISTERED, HISTORICAL_RECONSTRUCTION]}}
+        live_recorded: {type: boolean}
+        point_in_time_fields: {type: array, items: {type: string}}
+        ordering: {type: array, items: {type: string}}
+        filters: {type: array, items: {type: string}}
+        pagination: {type: object, additionalProperties: true}
+        freshness_sla: {type: string}
+    Signal:
+      type: object
+      required: [event_id, contract_version, session_date, market_as_of, available_at, computed_at, source_retrieved_at, model_version, input_data_snapshot_id, signal_snapshot_id, input_checksum, signal_checksum, row_checksum, observation_mode, live_recorded, date, data_lane, regime, risk_signal, overall_stress_score, body_stress_score, tail_risk_hazard_score, confidence_score, confidence, data_quality, available_component_count, missing_inputs, primary_drivers, score_type, probability_status, revision_id, observation_at, valid_from, valid_until, ingested_at, source_mode, freshness, quality, provider_lineage, config_checksum, data_checksum, provenance, research_only]
       properties:
         event_id: {type: string}
-        contract_version: {type: string}
+        contract_version: {type: string, const: regime.signal.v3}
         session_date: {type: string, format: date}
+        date: {type: string, format: date}
         market_as_of: {type: string, format: date-time}
         available_at: {type: string, format: date-time}
         computed_at: {type: string, format: date-time}
@@ -238,183 +126,98 @@ components:
         row_checksum: {type: string}
         observation_mode: {type: string, enum: [LIVE_REGISTERED, HISTORICAL_RECONSTRUCTION]}
         live_recorded: {type: boolean}
-        date:
-          type: string
-          format: date
-        data_lane:
-          type: string
-        regime:
-          type: string
-        risk_signal:
-          type: string
-          enum: [RISK-ON, NEUTRAL, DE-RISK]
-        overall_stress_score:
-          type: number
-        body_stress_score:
-          type: number
-        tail_risk_hazard_score:
-          type: [number, "null"]
-        confidence_score:
-          type: number
-        confidence:
-          type: string
-          enum: [LOW, MEDIUM, HIGH]
-        data_quality:
-          type: string
-        available_component_count:
-          type: integer
-        missing_inputs:
-          type: string
-        primary_drivers:
-          type: string
-        score_type:
-          type: string
-        probability_status:
-          type: string
-          enum: [NOT_CALIBRATED]
-    LatestSignalResponse:
+        data_lane: {type: string}
+        regime: {type: string}
+        risk_signal: {type: string, enum: [RISK-ON, NEUTRAL, DE-RISK]}
+        overall_stress_score: {type: number}
+        body_stress_score: {type: number}
+        tail_risk_hazard_score: {type: [number, "null"]}
+        confidence_score: {type: number}
+        confidence: {type: string, enum: [LOW, MEDIUM, HIGH]}
+        data_quality: {type: string}
+        available_component_count: {type: integer}
+        missing_inputs: {type: string}
+        primary_drivers: {type: string}
+        score_type: {type: string}
+        probability_status: {type: string, const: NOT_CALIBRATED}
+        revision_id: {type: string}
+        observation_at: {type: string, format: date-time}
+        valid_from: {type: string, format: date-time}
+        valid_until: {type: string, format: date-time}
+        ingested_at: {type: string, format: date-time}
+        source_mode: {type: string}
+        freshness: {type: string}
+        quality: {type: string}
+        provider_lineage: {type: object, additionalProperties: true}
+        config_checksum: {type: string}
+        data_checksum: {type: string}
+        provenance: {type: object, additionalProperties: true}
+        research_only: {type: boolean}
+      additionalProperties: true
+    Latest:
       type: object
-      required:
-        - observation_mode
-        - live_recorded
-        - model_version
-        - retrieved_at_utc
-        - data_snapshot_id
-        - data
+      required: [contract_version, observation_mode, live_recorded, model_version, retrieved_at_utc, data_snapshot_id, data]
       properties:
-        observation_mode:
-          type: string
-          enum: [LIVE_REGISTERED, HISTORICAL_RECONSTRUCTION]
-        live_recorded:
-          type: boolean
-          const: false
-        model_version:
-          type: string
-        retrieved_at_utc:
-          type: string
-          format: date-time
-        data_snapshot_id:
-          type: string
-        data:
-          $ref: "#/components/schemas/SignalObservation"
-    SignalHistoryResponse:
+        contract_version: {type: string}
+        observation_mode: {type: string, const: LIVE_REGISTERED}
+        live_recorded: {type: boolean, const: true}
+        model_version: {type: string}
+        retrieved_at_utc: {type: string, format: date-time}
+        data_snapshot_id: {type: string}
+        data: {$ref: "#/components/schemas/Signal"}
+    History:
       type: object
-      required:
-        - observation_mode
-        - live_recorded
-        - model_version
-        - start
-        - end
-        - count
-        - data
+      required: [contract_version, observation_mode, live_recorded, model_version, start, end, as_of, count, total, data, next_cursor]
       properties:
-        observation_mode:
-          type: string
-          enum: [LIVE_REGISTERED, HISTORICAL_RECONSTRUCTION]
-        live_recorded:
-          type: boolean
-          const: false
-        model_version:
-          type: string
-        start:
-          type: string
-          format: date
-        end:
-          type: string
-          format: date
-        count:
-          type: integer
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/SignalObservation"
-    SignalSeriesProvenance:
+        contract_version: {type: string}
+        observation_mode: {type: string, enum: [LIVE_REGISTERED, HISTORICAL_RECONSTRUCTION, MIXED]}
+        live_recorded: {type: boolean}
+        model_version: {type: ["string", "null"]}
+        start: {type: ["string", "null"], format: date}
+        end: {type: ["string", "null"], format: date}
+        as_of: {type: ["string", "null"], format: date-time}
+        count: {type: integer}
+        total: {type: integer}
+        data: {type: array, items: {$ref: "#/components/schemas/Signal"}}
+        next_cursor: {type: ["string", "null"]}
+    Catalog:
       type: object
-      required:
-        - field
-        - ticker
-        - source
-        - first_valid_date
-        - last_valid_date
-        - observations
-        - raw_payload_sha256
+      required: [contract_version, source, models, bounds]
       properties:
-        field:
-          type: string
-        ticker:
-          type: string
-        source:
-          type: string
-        first_valid_date:
-          type: string
-          format: date
-        last_valid_date:
-          type: string
-          format: date
-        observations:
-          type: integer
-        raw_payload_sha256:
-          type: string
-    SignalProvenanceResponse:
+        contract_version: {type: string}
+        source: {type: string}
+        models: {type: array, items: {type: object, additionalProperties: true}}
+        bounds: {type: object, additionalProperties: true}
+    Provenance:
       type: object
-      required:
-        - observation_mode
-        - live_recorded
-        - source
-        - model_version
-        - requested_start_date
-        - requested_end_date
-        - retrieved_at_utc
-        - history_first_date
-        - history_last_date
-        - history_row_count
-        - history_sha256
-        - input_data_snapshot_id
-        - signal_snapshot_id
-        - probability_status
-        - score_semantics
-        - series
+      required: [contract_version, observation_mode, live_recorded, source, model_version, requested_start_date, requested_end_date, retrieved_at_utc, history_first_date, history_last_date, history_row_count, history_sha256, input_data_snapshot_id, signal_snapshot_id, probability_status, score_semantics, series]
       properties:
-        observation_mode:
-          type: string
-          enum: [LIVE_REGISTERED, HISTORICAL_RECONSTRUCTION]
-        live_recorded:
-          type: boolean
-          const: false
-        source:
-          type: string
-        model_version:
-          type: string
-        requested_start_date:
-          type: string
-          format: date
-        requested_end_date:
-          type: string
-          format: date
-        retrieved_at_utc:
-          type: string
-          format: date-time
-        history_first_date:
-          type: string
-          format: date
-        history_last_date:
-          type: string
-          format: date
-        history_row_count:
-          type: integer
-        history_sha256:
-          type: string
-        input_data_snapshot_id:
-          type: string
-        signal_snapshot_id:
-          type: string
-        probability_status:
-          type: string
-          enum: [NOT_CALIBRATED]
-        score_semantics:
-          type: string
-        series:
-          type: array
-          items:
-            $ref: "#/components/schemas/SignalSeriesProvenance"
-
+        contract_version: {type: string}
+        observation_mode: {type: string}
+        live_recorded: {type: boolean}
+        source: {type: string}
+        model_version: {type: ["string", "null"]}
+        requested_start_date: {type: ["string", "null"], format: date}
+        requested_end_date: {type: ["string", "null"], format: date}
+        retrieved_at_utc: {type: ["string", "null"], format: date-time}
+        history_first_date: {type: ["string", "null"], format: date}
+        history_last_date: {type: ["string", "null"], format: date}
+        history_row_count: {type: integer}
+        history_sha256: {type: ["string", "null"]}
+        input_data_snapshot_id: {type: ["string", "null"]}
+        signal_snapshot_id: {type: ["string", "null"]}
+        probability_status: {type: string, const: NOT_CALIBRATED}
+        score_semantics: {type: ["string", "null"]}
+        series: {type: array, items: {type: object, additionalProperties: true}}
+    HealthStatus:
+      type: object
+      required: [status, freshness_sla_hours, integrity, connectivity, source_freshness, computation, persistence, hub_eligibility]
+      properties:
+        status: {type: string, enum: [HEALTHY, STALE, ERROR]}
+        freshness_sla_hours: {type: number}
+        integrity: {type: object, additionalProperties: true}
+        connectivity: {type: object, additionalProperties: true}
+        source_freshness: {type: object, additionalProperties: true}
+        computation: {type: object, additionalProperties: true}
+        persistence: {type: object, additionalProperties: true}
+        hub_eligibility: {type: object, additionalProperties: true}

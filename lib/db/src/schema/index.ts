@@ -28,6 +28,7 @@ export const signalEvents = pgTable("signal_events", {
   computedAt: timestamp("computed_at", { withTimezone: true }).notNull(),
   sourceRetrievedAt: timestamp("source_retrieved_at", { withTimezone: true }).notNull(),
   observationMode: text("observation_mode").notNull(),
+  sourceMode: text("source_mode"),
   liveRecorded: boolean("live_recorded").notNull(),
   contractVersion: text("contract_version").notNull(),
   modelVersion: text("model_version").notNull(),
@@ -36,6 +37,19 @@ export const signalEvents = pgTable("signal_events", {
   inputChecksum: text("input_checksum").notNull(),
   rowChecksum: text("row_checksum").notNull(),
   signal: jsonb("signal").notNull(),
+  // Publication metadata is deliberately nullable/defaulted so adding these
+  // columns to an existing 4,146-row book is non-destructive.
+  revisionId: text("revision_id"),
+  observationAt: timestamp("observation_at", { withTimezone: true }),
+  validFrom: timestamp("valid_from", { withTimezone: true }),
+  validUntil: timestamp("valid_until", { withTimezone: true }),
+  ingestedAt: timestamp("ingested_at", { withTimezone: true }).defaultNow(),
+  freshness: text("freshness"),
+  quality: text("quality"),
+  providerLineage: jsonb("provider_lineage"),
+  configChecksum: text("config_checksum"),
+  dataChecksum: text("data_checksum"),
+  provenance: jsonb("provenance"),
 }, (table) => ({
   availableIdx: index("signal_events_available_idx").on(table.availableAt, table.eventId),
   sessionIdx: index("signal_events_session_idx").on(table.sessionDate),
@@ -53,6 +67,8 @@ export const signalIngestionRuns = pgTable("signal_ingestion_runs", {
   rowCount: integer("row_count").notNull(),
   sourceMetadata: jsonb("source_metadata").notNull(),
   error: text("error"),
+  leaseUntil: timestamp("lease_until", { withTimezone: true }),
+  heartbeatAt: timestamp("heartbeat_at", { withTimezone: true }),
 });
 
 export const signalSourceState = pgTable("signal_source_state", {

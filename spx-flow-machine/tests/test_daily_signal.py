@@ -66,6 +66,49 @@ class DailySignalTests(unittest.TestCase):
         self.assertGreaterEqual(latest["overall_stress_score"], 0.0)
         self.assertLessEqual(latest["overall_stress_score"], 100.0)
 
+    def test_score_is_deterministic_for_free_daily_regime_v1(self):
+        data = canonical_frame()
+        first = signal.score_daily_regimes(data)
+        second = signal.score_daily_regimes(data.copy())
+        pd.testing.assert_series_equal(
+            first["overall_stress_score"], second["overall_stress_score"]
+        )
+        self.assertEqual(signal.MODEL_VERSION, "free_daily_regime_v1")
+
+    def test_refresh_quality_is_per_date_and_degraded_is_not_deployable(self):
+        data = canonical_frame()
+        data.loc[data.index[-2], "vvix_close"] = np.nan
+        data_manifest = {
+            "retrieved_at_utc": "2026-09-18T12:00:00+00:00",
+            "snapshot": {"snapshot_id": "input-snapshot"},
+            "series": {"spx_close": {}, "vix_close": {}, "skew_close": {}},
+            "unavailable_series": {},
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            with patch.object(
+                signal, "ingest_yahoo_daily",
+                return_value=(data, data_manifest),
+            ):
+                history, manifest = signal.refresh_free_signal(
+                    "2023-01-01", "2026-01-01", directory
+                )
+        degraded = next(
+            row for row in manifest["per_date_quality"]
+            if row["date"] == data.iloc[-2]["date"].date().isoformat()
+        )
+        complete = next(
+            row for row in manifest["per_date_quality"]
+            if row["date"] == data.iloc[-1]["date"].date().isoformat()
+        )
+        self.assertEqual(degraded["data_quality"], "DEGRADED_MISSING_INPUTS")
+        self.assertIn("vvix_close", degraded["missing_inputs"])
+        self.assertFalse(degraded["deployable"])
+        self.assertEqual(complete["data_quality"], "COMPLETE")
+        self.assertEqual(complete["component_quality"], "COMPLETE")
+        self.assertFalse(complete["deployable"])
+        self.assertFalse(manifest["deployable"])
+        self.assertEqual(manifest["research_status"], "RESEARCH_ONLY")
+
     def test_refresh_persists_provenance_and_signal_snapshot(self):
         data = canonical_frame()
         data[["vix9d_close", "vix3m_close", "vvix_close"]] = np.nan

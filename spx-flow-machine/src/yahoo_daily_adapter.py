@@ -448,6 +448,7 @@ def ingest_yahoo_daily(
     unavailable_series: dict[str, dict[str, object]] = {}
 
     for definition in SERIES:
+        optional = definition.lane == "augmented"
         try:
             raw = fetcher(definition.ticker, start, end)
         except Exception as error:
@@ -455,7 +456,7 @@ def ingest_yahoo_daily(
                 f"Yahoo Finance download failed for {definition.ticker} "
                 f"for requested range {start} to {end}: {error}"
             )
-            if allow_missing_optional and definition.ticker != "^GSPC":
+            if allow_missing_optional and optional:
                 unavailable_series[definition.canonical_field] = {
                     "source": SOURCE_NAME,
                     "ticker": definition.ticker,
@@ -477,7 +478,7 @@ def ingest_yahoo_daily(
             reason = (
                 f"Yahoo Finance download for {definition.ticker} did not return a DataFrame."
             )
-            if allow_missing_optional and definition.ticker != "^GSPC":
+            if allow_missing_optional and optional:
                 unavailable_series[definition.canonical_field] = {
                     "source": SOURCE_NAME,
                     "ticker": definition.ticker,
@@ -500,7 +501,7 @@ def ingest_yahoo_daily(
                 f"Yahoo Finance returned no rows for required ticker {definition.ticker} "
                 f"for requested range {start} to {end}."
             )
-            if allow_missing_optional and definition.ticker != "^GSPC":
+            if allow_missing_optional and optional:
                 unavailable_series[definition.canonical_field] = {
                     "source": SOURCE_NAME,
                     "ticker": definition.ticker,
@@ -529,6 +530,14 @@ def ingest_yahoo_daily(
         try:
             close_column = _close_column(raw_flat)
         except YahooDownloadError as error:
+            if allow_missing_optional and optional:
+                unavailable_series[definition.canonical_field] = {
+                    "source": SOURCE_NAME,
+                    "ticker": definition.ticker,
+                    "lane": definition.lane,
+                    "reason": str(error),
+                }
+                continue
             _write_failure_manifest(
                 output_path,
                 retrieved_at,
@@ -553,9 +562,17 @@ def ingest_yahoo_daily(
         numeric_quality = _numeric_quality(raw_flat[close_column], parsed["close"])
         if not numeric_quality["numeric_values_valid"]:
             reason = (
-                f"Yahoo Finance returned invalid Close values for required ticker "
+                f"Yahoo Finance returned invalid Close values for ticker "
                 f"{definition.ticker}: {numeric_quality}."
             )
+            if allow_missing_optional and optional:
+                unavailable_series[definition.canonical_field] = {
+                    "source": SOURCE_NAME,
+                    "ticker": definition.ticker,
+                    "lane": definition.lane,
+                    "reason": reason,
+                }
+                continue
             _write_failure_manifest(
                 output_path,
                 retrieved_at,
@@ -571,7 +588,7 @@ def ingest_yahoo_daily(
                 f"Yahoo Finance returned no usable Close values for required ticker "
                 f"{definition.ticker} for requested range {start} to {end}."
             )
-            if allow_missing_optional and definition.ticker != "^GSPC":
+            if allow_missing_optional and optional:
                 unavailable_series[definition.canonical_field] = {
                     "source": SOURCE_NAME,
                     "ticker": definition.ticker,

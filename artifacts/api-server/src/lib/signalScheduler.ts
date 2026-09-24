@@ -20,6 +20,13 @@ export type SourceState = {
   checkedAt: Date;
 };
 
+/** Contract for a future authoritative live provider. Yahoo does not
+ * implement this interface and therefore can never produce LIVE_REGISTERED. */
+export interface LiveSignalProvider {
+  readonly name: string;
+  fetchLive(input: { asOf: Date }): Promise<unknown>;
+}
+
 export type IngestionRun = {
   id: string;
   logicalKey: string;
@@ -44,7 +51,7 @@ export interface SignalSchedulerRepository {
   /** Atomically makes staged output visible; never overwrite this on failure. */
   publishStagedOutput(
     stagingDirectory: string,
-    input: { logicalKey: string; watermark: string },
+    input: { logicalKey: string; watermark: string; runId?: string },
   ): Promise<{ published: boolean; watermark: string; insertedCount: number }>;
 }
 
@@ -56,6 +63,8 @@ export type RefreshOptions = {
   retryBaseDelayMs?: number;
   retryCapDelayMs?: number;
   clock?: SchedulerClock;
+  /** Deliberately absent by default: fail closed rather than inventing live data. */
+  liveProvider?: LiveSignalProvider;
 };
 
 const ZONE = "America/New_York";
@@ -173,7 +182,7 @@ export async function runWeekdayPostClose(
           // atomic repository operation, so a failed Python run cannot damage
           // the last-good signal files.
           await runRefresh(options.pythonCommand ?? "python3", [PYTHON_REFRESH, "--start", options.startDate ?? "2010-01-01", "--end", end, "--output-dir", staging]);
-          const publication = await repository.publishStagedOutput(staging, { logicalKey, watermark: state.watermark });
+           const publication = await repository.publishStagedOutput(staging, { logicalKey, watermark: state.watermark, runId: run.id });
           await repository.finishIngestionRun(run.id, {
             status: "SUCCEEDED",
             rowCount: publication.insertedCount,
@@ -195,4 +204,12 @@ export async function runWeekdayPostClose(
     }
   });
   return result ?? { status: "SKIPPED", attempts: 0 };
+}
+
+/** One-shot entry point for cron/Cloud Scheduler/Kubernetes CronJob. */
+export async function runScheduledTick(
+  repository: SignalSchedulerRepository,
+  options: RefreshOptions = {},
+): Promise<SchedulerResult> {
+  return runWeekdayPostClose(repository, options);
 }
