@@ -140,14 +140,14 @@ class YahooDailyAdapterTests(unittest.TestCase):
         self.assertEqual(coverage["augmented_lane"]["complete_rows"], 2)
         self.assertEqual(coverage["per_series"]["vix9d_close"]["first_valid_date"], "2024-01-03")
 
-    def test_required_ticker_download_failure_is_loud(self):
+    def test_core_ticker_download_failure_is_loud(self):
         def failing_fetcher(ticker, start, end):
-            if ticker == "^VVIX":
+            if ticker == "^VIX":
                 return pd.DataFrame()
             return self.fetcher(ticker, start, end)
 
         with tempfile.TemporaryDirectory() as output_dir:
-            with self.assertRaisesRegex(adapter.YahooDownloadError, r"\^VVIX"):
+            with self.assertRaisesRegex(adapter.YahooDownloadError, r"\^VIX"):
                 adapter.ingest_yahoo_daily(
                     "2024-01-02", "2024-01-05", output_dir, fetcher=failing_fetcher
                 )
@@ -155,7 +155,7 @@ class YahooDailyAdapterTests(unittest.TestCase):
                 (Path(output_dir) / "metadata_manifest.json").read_text(encoding="utf-8")
             )
             self.assertEqual(failure_manifest["status"], "failed")
-            self.assertEqual(failure_manifest["failure"]["ticker"], "^VVIX")
+            self.assertEqual(failure_manifest["failure"]["ticker"], "^VIX")
             self.assertFalse(failure_manifest["canonical_output_written"])
 
     def test_free_mode_degrades_when_optional_series_is_unavailable(self):
@@ -177,6 +177,29 @@ class YahooDailyAdapterTests(unittest.TestCase):
             self.assertIn("vvix_close", manifest["unavailable_series"])
             self.assertTrue(canonical["vix9d_close"].isna().all())
             self.assertTrue(canonical["vvix_close"].isna().all())
+
+    def test_optional_invalid_close_degrades_instead_of_failing(self):
+        self.payloads["^VVIX"] = make_payload(
+            ["2024-01-02", "2024-01-03"], [90.0, "invalid"]
+        )
+        with tempfile.TemporaryDirectory() as output_dir:
+            canonical, manifest = adapter.ingest_yahoo_daily(
+                "2024-01-02", "2024-01-05", output_dir,
+                fetcher=self.fetcher, allow_missing_optional=True
+            )
+        self.assertTrue(canonical["vvix_close"].isna().all())
+        self.assertIn("vvix_close", manifest["unavailable_series"])
+
+    def test_core_invalid_close_fails_closed(self):
+        self.payloads["^SKEW"] = make_payload(
+            ["2024-01-02", "2024-01-03"], [140.0, "invalid"]
+        )
+        with tempfile.TemporaryDirectory() as output_dir:
+            with self.assertRaisesRegex(adapter.YahooDownloadError, r"\^SKEW"):
+                adapter.ingest_yahoo_daily(
+                    "2024-01-02", "2024-01-05", output_dir,
+                    fetcher=self.fetcher, allow_missing_optional=True
+                )
 
     def test_invalid_numeric_close_fails_loudly(self):
         self.payloads["^VIX"] = make_payload(

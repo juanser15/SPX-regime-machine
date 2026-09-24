@@ -274,21 +274,50 @@ def refresh_free_signal(
             "Insufficient real Yahoo history to compute a causal FREE daily signal."
         )
 
-    latest_data = canonical.iloc[-1]
-    missing_inputs = [
-        column
-        for column in CANONICAL_COLUMNS[1:]
-        if pd.isna(latest_data[column])
-    ]
-    data_lane = "AUGMENTED" if not missing_inputs else "CORE_FREE_DEGRADED"
-    data_quality = (
-        "COMPLETE"
-        if not missing_inputs
-        else "DEGRADED_MISSING_INPUTS"
-    )
-    history["data_lane"] = data_lane
-    history["data_quality"] = data_quality
-    history["missing_inputs"] = ",".join(missing_inputs)
+    # Quality is deliberately evaluated against the same calendar row as each
+    # signal.  Do not copy the latest row's status backwards through history.
+    canonical_by_date = canonical.set_index("date")
+    unavailable = data_manifest.get("unavailable_series", {})
+    per_date_quality: list[dict[str, object]] = []
+    row_lanes: list[str] = []
+    row_quality: list[str] = []
+    row_missing: list[str] = []
+    for date in history["date"]:
+        source_row = canonical_by_date.loc[date]
+        missing = [
+            column for column in CANONICAL_COLUMNS[1:] if pd.isna(source_row[column])
+        ]
+        reasons = {
+            column: (
+                str(unavailable[column].get("reason", "unavailable"))
+                if column in unavailable
+                else "missing Close for this date"
+            )
+            for column in missing
+        }
+        quality = "COMPLETE" if not missing else "DEGRADED_MISSING_INPUTS"
+        lane = "AUGMENTED" if not missing else "CORE_FREE_DEGRADED"
+        row_lanes.append(lane)
+        row_quality.append(quality)
+        row_missing.append(",".join(missing))
+        per_date_quality.append(
+            {
+                "date": pd.Timestamp(date).date().isoformat(),
+                "data_quality": quality,
+                "data_lane": lane,
+                "missing_inputs": missing,
+                "missing_component_reasons": reasons,
+                # Yahoo historical/backfill data is never live-deployable,
+                # even when every component happens to be present.  Keep
+                # component quality separate from this source-policy gate.
+                "component_quality": "COMPLETE" if not missing else "DEGRADED",
+                "research_status": "RESEARCH_ONLY",
+                "deployable": False,
+            }
+        )
+    history["data_lane"] = row_lanes
+    history["data_quality"] = row_quality
+    history["missing_inputs"] = row_missing
     history = history.loc[:, list(SIGNAL_COLUMNS)]
 
     history_to_write = history.copy()
@@ -298,6 +327,15 @@ def refresh_free_signal(
     history_path.write_text(history_payload, encoding="utf-8")
 
     latest = _json_safe_record(history_to_write.iloc[-1].to_dict())
+    latest_quality = per_date_quality[-1]
+    latest.update(
+        {
+            "missing_component_reasons": latest_quality["missing_component_reasons"],
+            "research_status": latest_quality["research_status"],
+            "component_quality": latest_quality["component_quality"],
+            "deployable": False,
+        }
+    )
     latest["retrieved_at_utc"] = data_manifest["retrieved_at_utc"]
     latest["data_snapshot_id"] = data_manifest["snapshot"]["snapshot_id"]
     latest["model_version"] = MODEL_VERSION
@@ -309,21 +347,26 @@ def refresh_free_signal(
     signal_snapshot_id = hashlib.sha256(
         f"{data_manifest['snapshot']['snapshot_id']}:{history_checksum}:{MODEL_VERSION}".encode()
     ).hexdigest()
+    latest_missing_inputs = list(latest_quality["missing_inputs"])
+    any_degraded = any(item["data_quality"] != "COMPLETE" for item in per_date_quality)
     signal_manifest: dict[str, object] = {
-        "status": "degraded" if missing_inputs else "complete",
+        "status": "degraded" if any_degraded else "complete",
         "model_version": MODEL_VERSION,
         "generated_at_utc": datetime.now(timezone.utc)
         .replace(microsecond=0)
         .isoformat(),
         "requested_start_date": start,
         "requested_end_date": end,
-        "input_source": "Yahoo Finance",
+        "input_source": "Yahoo Finance historical daily (not live)",
         "input_data_snapshot_id": data_manifest["snapshot"]["snapshot_id"],
         "input_data_manifest": "daily_data/metadata_manifest.json",
         "available_series": sorted(data_manifest["series"].keys()),
         "unavailable_series": data_manifest["unavailable_series"],
-        "current_missing_inputs": missing_inputs,
-        "data_lane": data_lane,
+        "current_missing_inputs": latest_missing_inputs,
+        "data_lane": latest_quality["data_lane"],
+        "research_status": "RESEARCH_ONLY",
+        "deployable": False,
+        "per_date_quality": per_date_quality,
         "causality": (
             "Trailing-only rolling calculations; no smoothing, Viterbi, "
             "future labels, imputation, or full-sample parameter estimation."

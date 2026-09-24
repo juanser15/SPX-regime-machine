@@ -1,12 +1,7 @@
 import app from "./app";
 import { logger } from "./lib/logger";
 import { getSignalArtifactDiagnostic } from "./lib/signalStore";
-import { latestSignal, signalSchedulerRepository } from "./lib/signalRepository";
-import {
-  isWeekdayPostCloseEligible,
-  nextWeekdayPostClose,
-  runWeekdayPostClose,
-} from "./lib/signalScheduler";
+import { latestSignal } from "./lib/signalRepository";
 
 const rawPort = process.env["PORT"];
 
@@ -33,39 +28,15 @@ try {
   const latest = await latestSignal();
   logger.info(
     { eventId: latest?.eventId, sessionDate: latest?.sessionDate },
-    "PostgreSQL signal book ready",
+    "PostgreSQL operational signal lookup completed",
   );
 } catch (error) {
   logger.error({ err: error }, "PostgreSQL signal book unavailable");
 }
 
-const maximumTimerDelay = 2_147_000_000;
-function scheduleSignalRefresh(): void {
-  const now = new Date();
-  const next = nextWeekdayPostClose(now);
-  const delay = Math.min(
-    maximumTimerDelay,
-    Math.max(1_000, next.getTime() - now.getTime()),
-  );
-  setTimeout(async () => {
-    try {
-      const result = await runWeekdayPostClose(signalSchedulerRepository);
-      logger.info({ result }, "Scheduled signal refresh completed");
-    } catch (error) {
-      logger.error({ err: error }, "Scheduled signal refresh failed");
-    } finally {
-      scheduleSignalRefresh();
-    }
-  }, delay);
-  logger.info({ nextRunAt: next.toISOString() }, "Signal refresh scheduled");
-}
-
-if (isWeekdayPostCloseEligible(new Date())) {
-  void runWeekdayPostClose(signalSchedulerRepository)
-    .then((result) => logger.info({ result }, "Startup signal refresh completed"))
-    .catch((error) => logger.error({ err: error }, "Startup signal refresh failed"));
-}
-scheduleSignalRefresh();
+// Refreshes are intentionally not driven by an in-process timer: autoscaled
+// instances are not durable workers. Invoke runScheduledTick from an external
+// cron/worker entry point instead.
 
 app.listen(port, (err) => {
   if (err) {
