@@ -16,9 +16,9 @@
     "RISK-ON": "overall_stress_score <= 35"
   },
   "deployable": false,
-  "generated_at_utc": "2026-09-25T14:16:23+00:00",
-  "input_data_manifest": "daily_data/snapshots/9b79222c02519b48106645b28ef4cb7142baad9879f55b459d945c94167f4532/metadata_manifest.json",
-  "input_data_snapshot_id": "9b79222c02519b48106645b28ef4cb7142baad9879f55b459d945c94167f4532",
+  "generated_at_utc": "2026-09-25T19:24:37+00:00",
+  "input_data_manifest": "daily_data/snapshots/57061fcda993ca8e6dd020c5c28457cb9a797c06fee6904339b68d773622d37b/metadata_manifest.json",
+  "input_data_snapshot_id": "57061fcda993ca8e6dd020c5c28457cb9a797c06fee6904339b68d773622d37b",
   "input_source": "Yahoo Finance historical daily (not live)",
   "latest_signal_file": "latest_signal.json",
   "model_version": "free_daily_regime_v1",
@@ -42608,7 +42608,7 @@
   "score_semantics": "Empirical trailing percentile scores on a 0-100 stress scale; not calibrated probabilities.",
   "signal_history_file": "signal_history.csv",
   "signal_history_sha256": "8340c870b55286c21821be2dd1f8f29af66c5fd3f2f9935b1ef7462a76d9aaaa",
-  "signal_snapshot_id": "ab1a54dee9e45a8339e7fafdd6a7e158ea329fc1f570fa6aa58b3cf64c7fa27d",
+  "signal_snapshot_id": "8bb776ebdb3b34b0ee3917ae5549568f4baaa97fcae6576a7eac5d8471af431f",
   "status": "degraded",
   "unavailable_series": {}
 }

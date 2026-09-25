@@ -21,6 +21,7 @@ FRESHNESS_LIMIT = timedelta(hours=72)
 @dataclass
 class RealSignalBundle:
     latest: dict
+    signal_snapshot_id: str
     history: pd.DataFrame
     canonical: pd.DataFrame
     input_row: pd.Series
@@ -95,7 +96,8 @@ def load_verified_real_signal(output_dir: Path) -> RealSignalBundle:
         ):
             failure = str(status["reason"])
     return RealSignalBundle(
-        latest=latest, history=history, canonical=canonical, input_row=input_row,
+        latest=latest, signal_snapshot_id=signal_id,
+        history=history, canonical=canonical, input_row=input_row,
         missing_inputs=missing, source=data_manifest["source"],
         components=component_details(score_row),
         latest_observation_dates={
