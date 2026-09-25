@@ -80,9 +80,8 @@ else:
 
 with st.expander("View Analysis"):
     if bundle is not None:
-        st.caption(
-            "Observed Yahoo daily closes only. Scores are empirical, not calibrated probabilities."
-        )
+        st.markdown("**RESEARCH SIGNAL / NOT CALIBRATED PROBABILITY**")
+        st.caption("Observed Yahoo daily closes only; no missing close is filled.")
         st.markdown("#### Real market inputs at the as-of session")
         for field, ticker in INPUT_NAMES.items():
             value = row[field]
@@ -108,6 +107,21 @@ with st.expander("View Analysis"):
             )
         st.write(f"**Overall stress score:** {score_label(latest.get('overall_stress_score'))}")
         st.write(f"**Body / repricing stress score:** {score_label(latest.get('body_stress_score'))}")
+        st.markdown("#### Components contributing to this score")
+        for part in bundle.components:
+            st.write(
+                f"**{part['name']}** ({part['group']}) · "
+                f"{part['transformation']} = {float(part['transformed_value']):.6g} · "
+                f"trailing percentile {float(part['percentile_score']):.4f}/100 · "
+                f"base weight {float(part['base_weight']):.0%} · "
+                f"effective weight {float(part['effective_weight']):.4%} · "
+                f"contribution {float(part['weighted_points']):.4f} points"
+            )
+        st.caption(
+            "Only available components contribute. Weights renormalize within body and tail; "
+            "overall = 75% body + 25% tail when tail exists, otherwise 100% body. "
+            "See the free_daily_regime_v1 methodology for input transforms and windows."
+        )
         if has_real_tail_inputs(row) and pd.notna(latest.get("tail_risk_hazard_score")):
             st.write(f"**Tail stress / hazard score:** {score_label(latest['tail_risk_hazard_score'])}")
             st.caption(

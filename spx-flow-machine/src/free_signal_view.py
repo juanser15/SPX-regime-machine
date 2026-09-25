@@ -10,6 +10,7 @@ from zoneinfo import ZoneInfo
 
 import pandas as pd
 
+from src.daily_signal import component_details, score_daily_regimes
 from src.yahoo_daily_adapter import CANONICAL_COLUMNS, SERIES
 
 INPUT_NAMES = {definition.canonical_field: definition.ticker for definition in SERIES}
@@ -25,6 +26,7 @@ class RealSignalBundle:
     input_row: pd.Series
     missing_inputs: list[str]
     source: str
+    components: list[dict[str, object]]
 
 
 def load_verified_real_signal(output_dir: Path) -> RealSignalBundle:
@@ -65,9 +67,25 @@ def load_verified_real_signal(output_dir: Path) -> RealSignalBundle:
         raise ValueError("The signal's session has no unique observed input row.")
     input_row = rows.iloc[0]
     missing = [name for name in CANONICAL_COLUMNS[1:] if pd.isna(input_row[name])]
+    scored = score_daily_regimes(
+        canonical.assign(date=pd.to_datetime(canonical["date"]))
+    )
+    score_rows = scored.loc[scored["date"].dt.strftime("%Y-%m-%d") == latest["date"]]
+    if len(score_rows) != 1:
+        raise ValueError("The current component scores cannot be reproduced.")
+    score_row = score_rows.iloc[0]
+    for field in ("overall_stress_score", "body_stress_score", "tail_risk_hazard_score"):
+        expected, actual = latest.get(field), score_row[field]
+        if pd.isna(expected) and pd.isna(actual):
+            continue
+        if pd.isna(expected) or pd.isna(actual) or abs(float(expected) - float(actual)) > 1e-6:
+            raise ValueError(f"Persisted {field} does not match verified real inputs.")
+    if latest.get("risk_signal") != score_row["risk_signal"]:
+        raise ValueError("The persisted signal action does not match verified real inputs.")
     return RealSignalBundle(
         latest=latest, history=history, canonical=canonical, input_row=input_row,
         missing_inputs=missing, source=data_manifest["source"],
+        components=component_details(score_row),
     )
 
 

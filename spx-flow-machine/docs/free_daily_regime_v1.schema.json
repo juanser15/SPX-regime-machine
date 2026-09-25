@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "free_daily_regime_v1.schema.json",
+  "title": "One audited free_daily_regime_v1 research signal",
+  "description": "One JSONL row in data/free_signal/audits/<signal_snapshot_id>.jsonl; never an operational live signal.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "date", "calculated_at_utc", "available_at_utc", "source_retrieved_at_utc",
+    "model_version", "source", "input_data_snapshot_id", "signal_snapshot_id",
+    "risk_signal", "action", "overall_stress_score", "body_stress_score",
+    "tail_risk_hazard_score", "confidence_score", "confidence", "data_quality",
+    "missing_inputs", "primary_drivers", "components", "research_only",
+    "probability_status"
+  ],
+  "properties": {
+    "date": {"type": "string", "format": "date", "description": "Market session as-of date; not a live observation timestamp."},
+    "calculated_at_utc": {"type": "string", "format": "date-time"},
+    "available_at_utc": {"type": "string", "format": "date-time"},
+    "source_retrieved_at_utc": {"type": "string", "format": "date-time"},
+    "model_version": {"const": "free_daily_regime_v1"},
+    "source": {"const": "Yahoo Finance historical daily (not live)"},
+    "input_data_snapshot_id": {"type": "string", "minLength": 1},
+    "signal_snapshot_id": {"type": "string", "minLength": 1},
+    "risk_signal": {"enum": ["RISK-ON", "NEUTRAL", "DE-RISK"]},
+    "action": {"enum": ["RISK-ON", "HOLD / NO ACTION", "DE-RISK"]},
+    "overall_stress_score": {"type": "number", "minimum": 0, "maximum": 100},
+    "body_stress_score": {"type": "number", "minimum": 0, "maximum": 100},
+    "tail_risk_hazard_score": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+    "confidence_score": {"type": "number", "minimum": 0, "maximum": 100},
+    "confidence": {"enum": ["LOW", "MEDIUM", "HIGH"]},
+    "data_quality": {"enum": ["COMPLETE", "DEGRADED_MISSING_INPUTS"]},
+    "missing_inputs": {"type": "array", "uniqueItems": true, "items": {"enum": ["spx_close", "vix_close", "vix9d_close", "vix3m_close", "vvix_close", "skew_close"]}},
+    "primary_drivers": {"type": "array", "maxItems": 3, "items": {"type": "string"}},
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 9,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "group", "transformation", "transformed_value", "percentile_score", "base_weight", "effective_weight", "weighted_points"],
+        "properties": {
+          "name": {"enum": ["weak_20d_trend", "drawdown", "realized_volatility", "vix_level", "vix_acceleration", "skew", "vvix", "front_vol_inversion", "vix_curve_inversion"]},
+          "group": {"enum": ["body", "tail"]},
+          "transformation": {"type": "string", "minLength": 1},
+          "transformed_value": {"type": "number"},
+          "percentile_score": {"type": "number", "minimum": 0, "maximum": 100},
+          "base_weight": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+          "effective_weight": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+          "weighted_points": {"type": "number", "minimum": 0, "maximum": 100}
+        }
+      }
+    },
+    "research_only": {"const": true},
+    "probability_status": {"const": "NOT_CALIBRATED"}
+  }
+}

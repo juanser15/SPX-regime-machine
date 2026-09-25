@@ -1,7 +1,9 @@
 import importlib
+import json
 import sys
 import tempfile
 import unittest
+from datetime import datetime
 from pathlib import Path
 from unittest.mock import patch
 
@@ -32,6 +34,35 @@ def canonical_frame(periods=420):
 
 
 class DailySignalTests(unittest.TestCase):
+    def test_frozen_threshold_boundaries_and_pm_labels(self):
+        from src.free_signal_view import pm_action
+
+        for score, research, displayed in (
+            (34.999999, "RISK-ON", "RISK-ON"),
+            (35.0, "RISK-ON", "RISK-ON"),
+            (35.000001, "NEUTRAL", "HOLD / NO ACTION"),
+            (64.999999, "NEUTRAL", "HOLD / NO ACTION"),
+            (65.0, "DE-RISK", "DE-RISK"),
+            (65.000001, "DE-RISK", "DE-RISK"),
+            (np.nan, "INSUFFICIENT_DATA", "HOLD / NO ACTION"),
+        ):
+            with self.subTest(score=score):
+                self.assertEqual(signal.risk_signal_for_score(score), research)
+                self.assertEqual(pm_action(research), displayed)
+
+    def test_percentile_uses_only_trailing_finite_values_and_includes_ties(self):
+        values = pd.Series([5.0] * 59 + [8.0, 5.0, np.nan, 1.0])
+        ranks = signal._rolling_percentile(values, window=60, min_periods=60)
+        self.assertEqual(float(ranks.iloc[59]), 100.0)
+        self.assertEqual(float(ranks.iloc[60]), 100.0 * 59 / 60)
+        self.assertTrue(pd.isna(ranks.iloc[61]))
+        self.assertTrue(pd.isna(ranks.iloc[62]))  # only 59 finite trailing values
+        extended = signal._rolling_percentile(
+            pd.concat([values, pd.Series([10000.0])], ignore_index=True),
+            window=60, min_periods=60,
+        )
+        pd.testing.assert_series_equal(ranks, extended.iloc[:-1], check_names=False)
+
     def test_future_rows_do_not_change_past_features_or_scores(self):
         full = canonical_frame()
         cutoff = 350
@@ -74,6 +105,88 @@ class DailySignalTests(unittest.TestCase):
             first["overall_stress_score"], second["overall_stress_score"]
         )
         self.assertEqual(signal.MODEL_VERSION, "free_daily_regime_v1")
+
+    def test_all_components_reconstruct_frozen_score_from_available_inputs(self):
+        data = canonical_frame()
+        data.loc[data.index[-1], ["vix9d_close", "vix3m_close", "vvix_close"]] = np.nan
+        row = signal.score_daily_regimes(data).iloc[-1]
+        details = signal.component_details(row)
+        self.assertTrue(details)
+        self.assertNotIn("vvix", {part["name"] for part in details})
+        self.assertAlmostEqual(sum(part["effective_weight"] for part in details), 1.0)
+        self.assertAlmostEqual(
+            sum(part["weighted_points"] for part in details), row["overall_stress_score"]
+        )
+
+    def test_append_only_audit_is_deterministic_and_persists_every_row(self):
+        base = canonical_frame(periods=420)
+        extended = canonical_frame(periods=425)
+        def manifest(snapshot_id):
+            return {
+                "retrieved_at_utc": "2026-09-18T12:00:00+00:00",
+                "snapshot": {"snapshot_id": snapshot_id},
+                "series": {"spx_close": {}, "vix_close": {}, "skew_close": {}},
+                "unavailable_series": {},
+            }
+
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            with patch.object(signal, "ingest_yahoo_daily") as ingest:
+                ingest.return_value = (base, manifest("snapshot-A"))
+                first, first_manifest = signal.refresh_free_signal(
+                    "2023-01-01", "2026-01-01", output
+                )
+                original_csv = (output / "signal_history.csv").read_bytes()
+                first_audit = (output / "audits" / f"{first_manifest['signal_snapshot_id']}.jsonl")
+                original_audit = first_audit.read_bytes()
+                records = [json.loads(line) for line in original_audit.splitlines()]
+                schema = json.loads(
+                    (PROJECT_ROOT / "docs" / "free_daily_regime_v1.schema.json").read_text()
+                )
+                self.assertEqual(len(records), len(first))
+                for record, (_, row) in zip(records, first.iterrows()):
+                    self.assertEqual(set(record), set(schema["required"]))
+                    self.assertEqual(record["date"], row["date"].date().isoformat())
+                    self.assertEqual(record["model_version"], signal.MODEL_VERSION)
+                    self.assertEqual(record["source"], "Yahoo Finance historical daily (not live)")
+                    self.assertTrue(record["research_only"])
+                    self.assertEqual(record["risk_signal"], row["risk_signal"])
+                    self.assertEqual(record["probability_status"], "NOT_CALIBRATED")
+                    self.assertEqual(record["confidence"], row["confidence"])
+                    self.assertEqual(record["data_quality"], row["data_quality"])
+                    self.assertEqual(record["primary_drivers"], row["primary_drivers"].split("; "))
+                    self.assertEqual(record["input_data_snapshot_id"], "snapshot-A")
+                    self.assertAlmostEqual(
+                        sum(component["weighted_points"] for component in record["components"]),
+                        record["overall_stress_score"],
+                    )
+                    for component in record["components"]:
+                        self.assertEqual(
+                            set(component), set(schema["properties"]["components"]["items"]["required"])
+                        )
+                    available = datetime.fromisoformat(record["available_at_utc"])
+                    self.assertGreaterEqual(available, datetime.fromisoformat(record["calculated_at_utc"]))
+                    self.assertGreaterEqual(available, datetime.fromisoformat(record["source_retrieved_at_utc"]))
+                # Re-run identical input: immutable audit and old CSV bytes stay identical.
+                signal.refresh_free_signal("2023-01-01", "2026-01-01", output)
+                self.assertEqual(first_audit.read_bytes(), original_audit)
+                self.assertEqual((output / "signal_history.csv").read_bytes(), original_csv)
+
+                ingest.return_value = (extended, manifest("snapshot-B"))
+                appended, new_manifest = signal.refresh_free_signal(
+                    "2023-01-01", "2026-01-01", output
+                )
+                self.assertEqual(len(appended), len(first) + 5)
+                self.assertTrue((output / "signal_history.csv").read_bytes().startswith(original_csv))
+                self.assertEqual(first_audit.read_bytes(), original_audit)
+                self.assertNotEqual(first_manifest["signal_snapshot_id"], new_manifest["signal_snapshot_id"])
+
+                revised = extended.copy()
+                revised.loc[revised.index[300], "spx_close"] *= 0.5
+                ingest.return_value = (revised, manifest("snapshot-C"))
+                with self.assertRaisesRegex(RuntimeError, "refusing to silently revise"):
+                    signal.refresh_free_signal("2023-01-01", "2026-01-01", output)
+                self.assertEqual(first_audit.read_bytes(), original_audit)
 
     def test_refresh_quality_is_per_date_and_degraded_is_not_deployable(self):
         data = canonical_frame()
