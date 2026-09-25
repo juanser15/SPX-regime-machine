@@ -1,4 +1,6 @@
 import importlib
+import copy
+import hashlib
 import json
 import sys
 import tempfile
@@ -33,7 +35,161 @@ def canonical_frame(periods=420):
     )
 
 
+def staged_ingest(frame, manifest):
+    """Mock Yahoo I/O while preserving the real staged-snapshot contract."""
+    def ingest(start, end, output_dir, *, allow_missing_optional):
+        assert allow_missing_optional
+        output = Path(output_dir)
+        output.mkdir(parents=True, exist_ok=True)
+        data = frame.copy()
+        csv_payload = data.to_csv(index=False, lineterminator="\n", float_format="%.17g")
+        source = copy.deepcopy(manifest)
+        source["source"] = "Yahoo Finance"
+        source["canonical_sha256"] = hashlib.sha256(csv_payload.encode()).hexdigest()
+        snapshot = output / "snapshots" / source["snapshot"]["snapshot_id"]
+        snapshot.mkdir(parents=True)
+        (snapshot / "canonical_daily.csv").write_text(csv_payload)
+        (snapshot / "metadata_manifest.json").write_text(json.dumps(source))
+        (snapshot / "coverage_report.json").write_text("{}")
+        (snapshot / "raw").mkdir()
+        return data, source
+    return ingest
+
+
 class DailySignalTests(unittest.TestCase):
+    def test_preopen_provisional_row_is_preserved_but_not_published_or_frozen(self):
+        from src.free_signal_view import (
+            decision_for_display, load_verified_real_signal,
+        )
+
+        base = canonical_frame(periods=420)
+        base.loc[418, "date"] = pd.Timestamp("2026-09-24")
+        base.loc[419, "date"] = pd.Timestamp("2026-09-25")
+        preopen = base.copy()
+        preopen.loc[419, ["spx_close", "vix9d_close", "vix3m_close",
+                          "vvix_close", "skew_close"]] = np.nan
+        during = base.copy()
+        during.loc[419, "skew_close"] = np.nan
+        preopen_at = datetime.fromisoformat("2026-09-25T13:29:46+00:00")
+        during_at = datetime.fromisoformat("2026-09-25T14:00:00+00:00")
+        completed_at = datetime.fromisoformat("2026-09-26T03:00:00+00:00")
+
+        def meta(snapshot_id, retrieved):
+            return {
+                "retrieved_at_utc": retrieved.isoformat(),
+                "snapshot": {"snapshot_id": snapshot_id},
+                "series": {"spx_close": {}, "vix_close": {}, "skew_close": {}},
+                "unavailable_series": {},
+            }
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with patch.object(signal, "ingest_yahoo_daily",
+                              side_effect=staged_ingest(
+                                  preopen, meta("preopen-snapshot", preopen_at))):
+                initial, initial_manifest = signal.refresh_free_signal(
+                    "2023-01-01", "2026-09-26", root,
+                    now=preopen_at.replace(minute=30),
+                )
+            self.assertEqual(initial.iloc[-1]["date"].date().isoformat(), "2026-09-24")
+            old_id = initial_manifest["signal_snapshot_id"]
+            audit_path = root / "audits" / f"{old_id}.jsonl"
+            original_audit = audit_path.read_bytes()
+            provisional = pd.read_csv(
+                root / "daily_data" / "snapshots" / "preopen-snapshot" / "canonical_daily.csv"
+            ).iloc[-1]
+            self.assertTrue(pd.isna(provisional["spx_close"]))
+            self.assertTrue(pd.notna(provisional["vix_close"]))
+
+            with patch.object(signal, "ingest_yahoo_daily",
+                              side_effect=staged_ingest(
+                                  during, meta("intraday-snapshot", during_at))):
+                intraday, _ = signal.refresh_free_signal(
+                    "2023-01-01", "2026-09-26", root,
+                    now=during_at.replace(minute=5),
+                )
+            self.assertEqual(intraday.iloc[-1]["date"].date().isoformat(), "2026-09-24")
+            self.assertTrue((root / "snapshots" / old_id).exists())
+            self.assertEqual(audit_path.read_bytes(), original_audit)
+            protected_history = (root / "signal_history.csv").read_bytes()
+            bundle = load_verified_real_signal(root)
+            self.assertEqual(bundle.latest["date"], "2026-09-24")
+            self.assertEqual(
+                decision_for_display(bundle.latest, bundle.input_row,
+                                     now=during_at.replace(minute=5))[0],
+                "HOLD / NO ACTION",
+            )
+
+            with patch.object(signal, "ingest_yahoo_daily",
+                              side_effect=staged_ingest(
+                                  base, meta("completed-snapshot", completed_at))):
+                finished, finished_manifest = signal.refresh_free_signal(
+                    "2023-01-01", "2026-09-27", root,
+                    now=completed_at.replace(minute=5),
+                )
+            self.assertEqual(finished.iloc[-1]["date"].date().isoformat(), "2026-09-25")
+            self.assertTrue((root / "signal_history.csv").read_bytes().startswith(protected_history))
+            self.assertNotEqual(old_id, finished_manifest["signal_snapshot_id"])
+            self.assertEqual(audit_path.read_bytes(), original_audit)
+
+            revised = base.copy()
+            revised.loc[418, "spx_close"] *= 0.5  # September 24 was finalized.
+            prior_pointer = (root / "signal_manifest.json").read_bytes()
+            with patch.object(signal, "ingest_yahoo_daily",
+                              side_effect=staged_ingest(
+                                  revised, meta("vendor-revision", completed_at))):
+                with self.assertLogs(level="WARNING"):
+                    with self.assertRaisesRegex(RuntimeError, "2026-09-24"):
+                        signal.refresh_free_signal(
+                            "2023-01-01", "2026-09-27", root,
+                            now=completed_at.replace(minute=10),
+                        )
+            self.assertEqual((root / "signal_manifest.json").read_bytes(), prior_pointer)
+            review = json.loads(
+                (root / "revision_reviews" / "vendor-revision" / "review.json").read_text()
+            )
+            self.assertIn("2026-09-24", [item["date"] for item in review["changes"]])
+
+            invalid = base.copy()
+            invalid.loc[419, "spx_close"] = np.nan
+            with patch.object(signal, "ingest_yahoo_daily",
+                              side_effect=staged_ingest(
+                                  invalid, meta("insufficient-snapshot", completed_at))):
+                with self.assertLogs(level="WARNING"):
+                    with self.assertRaises(signal.SignalValidityError):
+                        signal.refresh_free_signal(
+                            "2023-01-01", "2026-09-27", root,
+                            now=completed_at.replace(minute=15),
+                        )
+            self.assertEqual((root / "signal_manifest.json").read_bytes(), prior_pointer)
+            failure_bundle = load_verified_real_signal(root)
+            self.assertIsNotNone(failure_bundle.current_failure)
+            action, eligible, _ = decision_for_display(
+                failure_bundle.latest, failure_bundle.input_row,
+                now=completed_at.replace(minute=15),
+                current_failure=failure_bundle.current_failure,
+            )
+            self.assertFalse(eligible)
+            self.assertEqual(action, "SIGNAL UNAVAILABLE — DATA FAILURE / INSUFFICIENT REAL DATA")
+
+    def test_legacy_provisional_row_is_not_a_finalized_vendor_revision(self):
+        preopen_at = datetime.fromisoformat("2026-09-25T13:29:46+00:00")
+        completed_at = datetime.fromisoformat("2026-09-26T03:00:00+00:00")
+        previous = "date,risk_signal\n2026-09-24,NEUTRAL\n2026-09-25,RISK-ON\n"
+        corrected = "date,risk_signal\n2026-09-24,NEUTRAL\n2026-09-25,NEUTRAL\n"
+        self.assertEqual(
+            signal._finalized_history_changes(previous, corrected, preopen_at), []
+        )
+        self.assertEqual(
+            signal._finalized_history_changes(previous, corrected, completed_at),
+            [{"date": "2026-09-25", "fields": ["risk_signal"]}],
+        )
+        revised_yesterday = corrected.replace("2026-09-24,NEUTRAL", "2026-09-24,DE-RISK")
+        self.assertEqual(
+            signal._finalized_history_changes(previous, revised_yesterday, preopen_at),
+            [{"date": "2026-09-24", "fields": ["risk_signal"]}],
+        )
+
     def test_frozen_threshold_boundaries_and_pm_labels(self):
         from src.free_signal_view import pm_action
 
@@ -132,7 +288,7 @@ class DailySignalTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
             with patch.object(signal, "ingest_yahoo_daily") as ingest:
-                ingest.return_value = (base, manifest("snapshot-A"))
+                ingest.side_effect = staged_ingest(base, manifest("snapshot-A"))
                 first, first_manifest = signal.refresh_free_signal(
                     "2023-01-01", "2026-01-01", output
                 )
@@ -172,7 +328,7 @@ class DailySignalTests(unittest.TestCase):
                 self.assertEqual(first_audit.read_bytes(), original_audit)
                 self.assertEqual((output / "signal_history.csv").read_bytes(), original_csv)
 
-                ingest.return_value = (extended, manifest("snapshot-B"))
+                ingest.side_effect = staged_ingest(extended, manifest("snapshot-B"))
                 appended, new_manifest = signal.refresh_free_signal(
                     "2023-01-01", "2026-01-01", output
                 )
@@ -183,9 +339,14 @@ class DailySignalTests(unittest.TestCase):
 
                 revised = extended.copy()
                 revised.loc[revised.index[300], "spx_close"] *= 0.5
-                ingest.return_value = (revised, manifest("snapshot-C"))
-                with self.assertRaisesRegex(RuntimeError, "refusing to silently revise"):
-                    signal.refresh_free_signal("2023-01-01", "2026-01-01", output)
+                ingest.side_effect = staged_ingest(revised, manifest("snapshot-C"))
+                before_pointer = (output / "signal_manifest.json").read_bytes()
+                with self.assertLogs(level="WARNING") as captured:
+                    with self.assertRaisesRegex(RuntimeError, "refusing to silently revise"):
+                        signal.refresh_free_signal("2023-01-01", "2026-01-01", output)
+                self.assertIn("requires explicit review", "\n".join(captured.output))
+                self.assertEqual((output / "signal_manifest.json").read_bytes(), before_pointer)
+                self.assertTrue((output / "revision_reviews" / "snapshot-C" / "review.json").exists())
                 self.assertEqual(first_audit.read_bytes(), original_audit)
 
     def test_refresh_quality_is_per_date_and_degraded_is_not_deployable(self):
@@ -198,10 +359,8 @@ class DailySignalTests(unittest.TestCase):
             "unavailable_series": {},
         }
         with tempfile.TemporaryDirectory() as directory:
-            with patch.object(
-                signal, "ingest_yahoo_daily",
-                return_value=(data, data_manifest),
-            ):
+            with patch.object(signal, "ingest_yahoo_daily",
+                              side_effect=staged_ingest(data, data_manifest)):
                 history, manifest = signal.refresh_free_signal(
                     "2023-01-01", "2026-01-01", directory
                 )
@@ -240,11 +399,8 @@ class DailySignalTests(unittest.TestCase):
             },
         }
         with tempfile.TemporaryDirectory() as directory:
-            with patch.object(
-                signal,
-                "ingest_yahoo_daily",
-                return_value=(data, data_manifest),
-            ):
+            with patch.object(signal, "ingest_yahoo_daily",
+                              side_effect=staged_ingest(data, data_manifest)):
                 history, manifest = signal.refresh_free_signal(
                     "2023-01-01", "2026-01-01", directory
                 )

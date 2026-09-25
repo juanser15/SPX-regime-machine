@@ -50,7 +50,9 @@ if bundle is None:
 else:
     latest = bundle.latest
     row = bundle.input_row
-    action, eligible, reason = decision_for_display(latest, row)
+    action, eligible, reason = decision_for_display(
+        latest, row, current_failure=bundle.current_failure,
+    )
     hedge = (
         tail_hedge_status(latest.get("tail_risk_hazard_score"))
         if eligible and has_real_tail_inputs(row) else NO_TAIL
@@ -88,6 +90,7 @@ with st.expander("View Analysis"):
             st.write(
                 f"**{ticker}** · {field.replace('_', ' ')}: "
                 + (f"{float(value):,.2f}" if pd.notna(value) else "NOT AVAILABLE")
+                + f" · Latest Yahoo observation: {bundle.latest_observation_dates.get(field) or 'NOT AVAILABLE'}"
             )
         st.write(
             "**Missing inputs:** "
@@ -147,19 +150,17 @@ with st.expander("View Analysis"):
                 continue
             observed = inputs.iloc[0]
             history_action = (
-                action if date == latest["date"] else
                 pm_action(history_row["risk_signal"]) if pd.notna(observed.get("spx_close"))
-                else "HOLD / NO ACTION"
+                else "SIGNAL UNAVAILABLE — DATA FAILURE / INSUFFICIENT REAL DATA"
             )
             history_hedge = (
-                hedge if date == latest["date"] else
                 tail_hedge_status(history_row.get("tail_risk_hazard_score"))
                 if has_real_tail_inputs(observed) else NO_TAIL
             )
             with st.container(border=True):
                 st.markdown(f"**{date} · {history_action}**")
                 st.caption(
-                    f"Tail Hedge: {history_hedge} · "
+                    f"Historical tail research status ({date}): {history_hedge} · "
                     f"Confidence: {history_row.get('confidence') or 'Unavailable'}"
                 )
             shown += 1

@@ -1,0 +1,5225 @@
+{
+  "adapter": "spx_daily_regime_yahoo_adapter",
+  "calendar_alignment": "outer join on observed calendar date only",
+  "calendar_quality": {
+    "alignment_method": "outer join on observed calendar date only",
+    "canonical_dates_monotonic_ascending": true,
+    "canonical_duplicate_dates": []
+  },
+  "canonical_file": "canonical_daily.csv",
+  "canonical_first_date": "2010-01-04",
+  "canonical_last_date": "2026-09-25",
+  "canonical_row_count": 4210,
+  "canonical_schema": [
+    "date",
+    "spx_close",
+    "vix_close",
+    "vix9d_close",
+    "vix3m_close",
+    "vvix_close",
+    "skew_close"
+  ],
+  "canonical_sha256": "03098aff5ad658763d1545d9ea0de6ac60445646095898fd3914508afabc3f9c",
+  "coverage": {
+    "augmented_lane": {
+      "calendar_rows": 4210,
+      "complete_percentage": 93.776722,
+      "complete_rows": 3948,
+      "fields": [
+        "vix9d_close",
+        "vix3m_close",
+        "vvix_close"
+      ],
+      "first_complete_date": "2011-01-03",
+      "last_complete_date": "2026-09-25",
+      "missing_rows": 262
+    },
+    "core_lane": {
+      "calendar_rows": 4210,
+      "complete_percentage": 98.456057,
+      "complete_rows": 4145,
+      "fields": [
+        "spx_close",
+        "vix_close",
+        "skew_close"
+      ],
+      "first_complete_date": "2010-01-04",
+      "last_complete_date": "2026-09-24",
+      "missing_rows": 65
+    },
+    "per_series": {
+      "skew_close": {
+        "first_valid_date": "2010-01-04",
+        "last_valid_date": "2026-09-24",
+        "missing_count": 65,
+        "missing_percentage": 1.543943,
+        "observations": 4145,
+        "ticker": "^SKEW"
+      },
+      "spx_close": {
+        "first_valid_date": "2010-01-04",
+        "last_valid_date": "2026-09-25",
+        "missing_count": 2,
+        "missing_percentage": 0.047506,
+        "observations": 4208,
+        "ticker": "^GSPC"
+      },
+      "vix3m_close": {
+        "first_valid_date": "2010-01-04",
+        "last_valid_date": "2026-09-25",
+        "missing_count": 2,
+        "missing_percentage": 0.047506,
+        "observations": 4208,
+        "ticker": "^VIX3M"
+      },
+      "vix9d_close": {
+        "first_valid_date": "2011-01-03",
+        "last_valid_date": "2026-09-25",
+        "missing_count": 254,
+        "missing_percentage": 6.033254,
+        "observations": 3956,
+        "ticker": "^VIX9D"
+      },
+      "vix_close": {
+        "first_valid_date": "2010-01-04",
+        "last_valid_date": "2026-09-25",
+        "missing_count": 0,
+        "missing_percentage": 0.0,
+        "observations": 4210,
+        "ticker": "^VIX"
+      },
+      "vvix_close": {
+        "first_valid_date": "2010-01-04",
+        "last_valid_date": "2026-09-25",
+        "missing_count": 11,
+        "missing_percentage": 0.261283,
+        "observations": 4199,
+        "ticker": "^VVIX"
+      }
+    }
+  },
+  "coverage_report_file": "coverage_report.json",
+  "missing_value_policy": "Missing Yahoo observations remain explicit null/NaN; no forward fill or interpolation.",
+  "requested_end_date": "2026-09-26",
+  "requested_start_date": "2010-01-01",
+  "retrieved_at_utc": "2026-09-25T14:16:23+00:00",
+  "series": {
+    "skew_close": {
+      "actual_first_observation_date": "2010-01-04",
+      "actual_last_observation_date": "2026-09-24",
+      "data_quality": {
+        "conflicting_duplicate_observations": [],
+        "duplicate_date_count": 0,
+        "duplicate_dates_removed": [],
+        "input_non_monotonic": false,
+        "numeric_validity": {
+          "daily_move_over_100pct_count": 0,
+          "non_finite_value_count": 0,
+          "non_numeric_value_count": 0,
+          "non_positive_value_count": 0,
+          "numeric_values_valid": true
+        },
+        "unexpected_gaps": {
+          "method": "weekday candidates between first and last valid observation; exchange holidays remain explicit review candidates",
+          "potential_weekday_gap_count": 219,
+          "potential_weekday_gap_intervals": [
+            {
+              "end_date": "2010-01-18",
+              "start_date": "2010-01-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-02-15",
+              "start_date": "2010-02-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-04-02",
+              "start_date": "2010-04-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-05-31",
+              "start_date": "2010-05-31",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-07-05",
+              "start_date": "2010-07-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-09-06",
+              "start_date": "2010-09-06",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-11-25",
+              "start_date": "2010-11-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-12-24",
+              "start_date": "2010-12-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-01-17",
+              "start_date": "2011-01-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-02-21",
+              "start_date": "2011-02-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-04-22",
+              "start_date": "2011-04-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-05-30",
+              "start_date": "2011-05-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-07-04",
+              "start_date": "2011-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-09-05",
+              "start_date": "2011-09-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-11-24",
+              "start_date": "2011-11-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-12-26",
+              "start_date": "2011-12-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-01-02",
+              "start_date": "2012-01-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-01-16",
+              "start_date": "2012-01-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-02-20",
+              "start_date": "2012-02-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-04-06",
+              "start_date": "2012-04-06",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-05-28",
+              "start_date": "2012-05-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-07-04",
+              "start_date": "2012-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-09-03",
+              "start_date": "2012-09-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-10-30",
+              "start_date": "2012-10-29",
+              "weekday_count": 2
+            },
+            {
+              "end_date": "2012-11-22",
+              "start_date": "2012-11-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-12-25",
+              "start_date": "2012-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-01-01",
+              "start_date": "2013-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-01-21",
+              "start_date": "2013-01-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-02-18",
+              "start_date": "2013-02-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-03-29",
+              "start_date": "2013-03-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-05-27",
+              "start_date": "2013-05-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-06-06",
+              "start_date": "2013-06-06",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-07-04",
+              "start_date": "2013-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-07-12",
+              "start_date": "2013-07-11",
+              "weekday_count": 2
+            },
+            {
+              "end_date": "2013-09-02",
+              "start_date": "2013-09-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-09-12",
+              "start_date": "2013-09-12",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-11-28",
+              "start_date": "2013-11-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-12-16",
+              "start_date": "2013-12-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-12-25",
+              "start_date": "2013-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-01-01",
+              "start_date": "2014-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-01-20",
+              "start_date": "2014-01-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-02-17",
+              "start_date": "2014-02-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-04-18",
+              "start_date": "2014-04-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-05-26",
+              "start_date": "2014-05-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-07-04",
+              "start_date": "2014-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-09-01",
+              "start_date": "2014-09-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-11-27",
+              "start_date": "2014-11-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-12-25",
+              "start_date": "2014-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-01-01",
+              "start_date": "2015-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-01-19",
+              "start_date": "2015-01-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-02-16",
+              "start_date": "2015-02-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-04-03",
+              "start_date": "2015-04-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-05-25",
+              "start_date": "2015-05-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-07-03",
+              "start_date": "2015-07-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-08-21",
+              "start_date": "2015-08-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-09-07",
+              "start_date": "2015-09-07",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-11-26",
+              "start_date": "2015-11-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-12-18",
+              "start_date": "2015-12-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-12-25",
+              "start_date": "2015-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-01-01",
+              "start_date": "2016-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-01-06",
+              "start_date": "2016-01-06",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-01-18",
+              "start_date": "2016-01-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-02-15",
+              "start_date": "2016-02-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-03-25",
+              "start_date": "2016-03-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-05-30",
+              "start_date": "2016-05-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-07-04",
+              "start_date": "2016-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-09-05",
+              "start_date": "2016-09-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-09-16",
+              "start_date": "2016-09-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-11-24",
+              "start_date": "2016-11-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-12-26",
+              "start_date": "2016-12-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-01-02",
+              "start_date": "2017-01-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-01-16",
+              "start_date": "2017-01-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-02-20",
+              "start_date": "2017-02-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-04-14",
+              "start_date": "2017-04-14",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-05-29",
+              "start_date": "2017-05-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-07-04",
+              "start_date": "2017-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-08-16",
+              "start_date": "2017-08-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-09-04",
+              "start_date": "2017-09-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-09-14",
+              "start_date": "2017-09-14",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-11-23",
+              "start_date": "2017-11-23",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-12-25",
+              "start_date": "2017-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-01-01",
+              "start_date": "2018-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-01-15",
+              "start_date": "2018-01-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-02-05",
+              "start_date": "2018-02-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-02-19",
+              "start_date": "2018-02-16",
+              "weekday_count": 2
+            },
+            {
+              "end_date": "2018-03-21",
+              "start_date": "2018-03-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-03-30",
+              "start_date": "2018-03-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-05-11",
+              "start_date": "2018-05-11",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-05-28",
+              "start_date": "2018-05-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-05-31",
+              "start_date": "2018-05-31",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-07-04",
+              "start_date": "2018-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-09-03",
+              "start_date": "2018-09-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-10-04",
+              "start_date": "2018-10-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-11-12",
+              "start_date": "2018-11-12",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-11-22",
+              "start_date": "2018-11-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-12-05",
+              "start_date": "2018-12-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-12-25",
+              "start_date": "2018-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-01-01",
+              "start_date": "2018-12-31",
+              "weekday_count": 2
+            },
+            {
+              "end_date": "2019-01-21",
+              "start_date": "2019-01-18",
+              "weekday_count": 2
+            },
+            {
+              "end_date": "2019-02-18",
+              "start_date": "2019-02-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-03-13",
+              "start_date": "2019-03-12",
+              "weekday_count": 2
+            },
+            {
+              "end_date": "2019-04-19",
+              "start_date": "2019-04-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-05-27",
+              "start_date": "2019-05-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-07-04",
+              "start_date": "2019-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-09-02",
+              "start_date": "2019-09-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-11-28",
+              "start_date": "2019-11-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-12-25",
+              "start_date": "2019-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-01-01",
+              "start_date": "2020-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-01-20",
+              "start_date": "2020-01-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-02-17",
+              "start_date": "2020-02-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-04-10",
+              "start_date": "2020-04-10",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-05-25",
+              "start_date": "2020-05-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-07-03",
+              "start_date": "2020-07-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-09-07",
+              "start_date": "2020-09-07",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-11-26",
+              "start_date": "2020-11-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-12-25",
+              "start_date": "2020-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-01-01",
+              "start_date": "2021-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-01-18",
+              "start_date": "2021-01-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-02-15",
+              "start_date": "2021-02-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-04-02",
+              "start_date": "2021-04-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-05-31",
+              "start_date": "2021-05-31",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-07-05",
+              "start_date": "2021-07-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-08-06",
+              "start_date": "2021-08-06",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-08-10",
+              "start_date": "2021-08-10",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-09-07",
+              "start_date": "2021-09-06",
+              "weekday_count": 2
+            },
+            {
+              "end_date": "2021-10-08",
+              "start_date": "2021-10-08",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-11-25",
+              "start_date": "2021-11-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-12-22",
+              "start_date": "2021-12-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-12-24",
+              "start_date": "2021-12-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-01-17",
+              "start_date": "2022-01-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-02-02",
+              "start_date": "2022-02-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-02-07",
+              "start_date": "2022-02-04",
+              "weekday_count": 2
+            },
+            {
+              "end_date": "2022-02-21",
+              "start_date": "2022-02-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-03-04",
+              "start_date": "2022-03-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-04-15",
+              "start_date": "2022-04-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-04-19",
+              "start_date": "2022-04-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-04-26",
+              "start_date": "2022-04-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-05-30",
+              "start_date": "2022-05-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-06-20",
+              "start_date": "2022-06-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-07-04",
+              "start_date": "2022-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-08-05",
+              "start_date": "2022-08-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-09-05",
+              "start_date": "2022-09-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-09-30",
+              "start_date": "2022-09-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-11-24",
+              "start_date": "2022-11-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-12-26",
+              "start_date": "2022-12-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-01-02",
+              "start_date": "2023-01-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-01-16",
+              "start_date": "2023-01-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-02-14",
+              "start_date": "2023-02-14",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-02-20",
+              "start_date": "2023-02-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-03-02",
+              "start_date": "2023-03-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-03-08",
+              "start_date": "2023-03-08",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-03-23",
+              "start_date": "2023-03-23",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-04-07",
+              "start_date": "2023-04-07",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-04-19",
+              "start_date": "2023-04-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-05-11",
+              "start_date": "2023-05-11",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-05-29",
+              "start_date": "2023-05-26",
+              "weekday_count": 2
+            },
+            {
+              "end_date": "2023-06-19",
+              "start_date": "2023-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-06-27",
+              "start_date": "2023-06-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-07-04",
+              "start_date": "2023-07-03",
+              "weekday_count": 2
+            },
+            {
+              "end_date": "2023-07-11",
+              "start_date": "2023-07-11",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-09-04",
+              "start_date": "2023-09-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-10-02",
+              "start_date": "2023-10-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-11-03",
+              "start_date": "2023-11-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-11-10",
+              "start_date": "2023-11-10",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-11-20",
+              "start_date": "2023-11-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-11-24",
+              "start_date": "2023-11-23",
+              "weekday_count": 2
+            },
+            {
+              "end_date": "2023-12-26",
+              "start_date": "2023-12-25",
+              "weekday_count": 2
+            },
+            {
+              "end_date": "2024-01-01",
+              "start_date": "2024-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-01-15",
+              "start_date": "2024-01-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-01-19",
+              "start_date": "2024-01-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-02-19",
+              "start_date": "2024-02-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-03-29",
+              "start_date": "2024-03-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-04-25",
+              "start_date": "2024-04-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-05-27",
+              "start_date": "2024-05-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-05-30",
+              "start_date": "2024-05-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-06-13",
+              "start_date": "2024-06-12",
+              "weekday_count": 2
+            },
+            {
+              "end_date": "2024-06-19",
+              "start_date": "2024-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-07-04",
+              "start_date": "2024-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-08-01",
+              "start_date": "2024-08-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-08-08",
+              "start_date": "2024-08-06",
+              "weekday_count": 3
+            },
+            {
+              "end_date": "2024-09-02",
+              "start_date": "2024-09-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-09-24",
+              "start_date": "2024-09-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-10-01",
+              "start_date": "2024-10-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-11-28",
+              "start_date": "2024-11-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-12-25",
+              "start_date": "2024-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-01-01",
+              "start_date": "2025-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-01-09",
+              "start_date": "2025-01-09",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-01-20",
+              "start_date": "2025-01-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-02-17",
+              "start_date": "2025-02-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-04-18",
+              "start_date": "2025-04-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-05-26",
+              "start_date": "2025-05-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-06-19",
+              "start_date": "2025-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-07-04",
+              "start_date": "2025-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-09-01",
+              "start_date": "2025-09-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-11-27",
+              "start_date": "2025-11-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-12-25",
+              "start_date": "2025-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-01-01",
+              "start_date": "2026-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-01-19",
+              "start_date": "2026-01-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-02-16",
+              "start_date": "2026-02-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-04-03",
+              "start_date": "2026-04-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-05-25",
+              "start_date": "2026-05-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-06-19",
+              "start_date": "2026-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-07-03",
+              "start_date": "2026-07-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-09-07",
+              "start_date": "2026-09-07",
+              "weekday_count": 1
+            }
+          ]
+        }
+      },
+      "deduplicated_row_count": 4145,
+      "raw_payload_file": "raw/SKEW.csv",
+      "raw_payload_sha256": "2fece83bc0caa66e66d90db197b25a6e13d31c09b9d1cf36825b67d2db9d5cd8",
+      "raw_row_count": 4145,
+      "requested_end_date": "2026-09-26",
+      "requested_start_date": "2010-01-01",
+      "retrieved_at_utc": "2026-09-25T14:16:23+00:00",
+      "source": "Yahoo Finance",
+      "ticker": "^SKEW",
+      "valid_close_count": 4145
+    },
+    "spx_close": {
+      "actual_first_observation_date": "2010-01-04",
+      "actual_last_observation_date": "2026-09-25",
+      "data_quality": {
+        "conflicting_duplicate_observations": [],
+        "duplicate_date_count": 0,
+        "duplicate_dates_removed": [],
+        "input_non_monotonic": false,
+        "numeric_validity": {
+          "daily_move_over_100pct_count": 0,
+          "non_finite_value_count": 0,
+          "non_numeric_value_count": 0,
+          "non_positive_value_count": 0,
+          "numeric_values_valid": true
+        },
+        "unexpected_gaps": {
+          "method": "weekday candidates between first and last valid observation; exchange holidays remain explicit review candidates",
+          "potential_weekday_gap_count": 157,
+          "potential_weekday_gap_intervals": [
+            {
+              "end_date": "2010-01-18",
+              "start_date": "2010-01-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-02-15",
+              "start_date": "2010-02-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-04-02",
+              "start_date": "2010-04-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-05-31",
+              "start_date": "2010-05-31",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-07-05",
+              "start_date": "2010-07-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-09-06",
+              "start_date": "2010-09-06",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-11-25",
+              "start_date": "2010-11-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-12-24",
+              "start_date": "2010-12-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-01-17",
+              "start_date": "2011-01-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-02-21",
+              "start_date": "2011-02-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-04-22",
+              "start_date": "2011-04-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-05-30",
+              "start_date": "2011-05-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-07-04",
+              "start_date": "2011-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-09-05",
+              "start_date": "2011-09-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-11-24",
+              "start_date": "2011-11-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-12-26",
+              "start_date": "2011-12-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-01-02",
+              "start_date": "2012-01-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-01-16",
+              "start_date": "2012-01-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-02-20",
+              "start_date": "2012-02-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-04-06",
+              "start_date": "2012-04-06",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-05-28",
+              "start_date": "2012-05-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-07-04",
+              "start_date": "2012-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-09-03",
+              "start_date": "2012-09-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-10-30",
+              "start_date": "2012-10-29",
+              "weekday_count": 2
+            },
+            {
+              "end_date": "2012-11-22",
+              "start_date": "2012-11-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-12-25",
+              "start_date": "2012-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-01-01",
+              "start_date": "2013-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-01-21",
+              "start_date": "2013-01-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-02-18",
+              "start_date": "2013-02-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-03-29",
+              "start_date": "2013-03-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-05-27",
+              "start_date": "2013-05-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-07-04",
+              "start_date": "2013-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-09-02",
+              "start_date": "2013-09-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-11-28",
+              "start_date": "2013-11-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-12-25",
+              "start_date": "2013-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-01-01",
+              "start_date": "2014-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-01-20",
+              "start_date": "2014-01-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-02-17",
+              "start_date": "2014-02-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-04-18",
+              "start_date": "2014-04-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-05-26",
+              "start_date": "2014-05-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-07-04",
+              "start_date": "2014-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-09-01",
+              "start_date": "2014-09-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-11-27",
+              "start_date": "2014-11-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-12-25",
+              "start_date": "2014-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-01-01",
+              "start_date": "2015-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-01-19",
+              "start_date": "2015-01-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-02-16",
+              "start_date": "2015-02-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-04-03",
+              "start_date": "2015-04-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-05-25",
+              "start_date": "2015-05-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-07-03",
+              "start_date": "2015-07-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-09-07",
+              "start_date": "2015-09-07",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-11-26",
+              "start_date": "2015-11-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-12-25",
+              "start_date": "2015-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-01-01",
+              "start_date": "2016-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-01-18",
+              "start_date": "2016-01-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-02-15",
+              "start_date": "2016-02-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-03-25",
+              "start_date": "2016-03-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-05-30",
+              "start_date": "2016-05-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-07-04",
+              "start_date": "2016-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-09-05",
+              "start_date": "2016-09-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-11-24",
+              "start_date": "2016-11-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-12-26",
+              "start_date": "2016-12-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-01-02",
+              "start_date": "2017-01-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-01-16",
+              "start_date": "2017-01-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-02-20",
+              "start_date": "2017-02-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-04-14",
+              "start_date": "2017-04-14",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-05-29",
+              "start_date": "2017-05-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-07-04",
+              "start_date": "2017-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-09-04",
+              "start_date": "2017-09-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-11-23",
+              "start_date": "2017-11-23",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-12-25",
+              "start_date": "2017-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-01-01",
+              "start_date": "2018-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-01-15",
+              "start_date": "2018-01-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-02-19",
+              "start_date": "2018-02-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-03-30",
+              "start_date": "2018-03-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-05-28",
+              "start_date": "2018-05-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-07-04",
+              "start_date": "2018-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-09-03",
+              "start_date": "2018-09-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-11-22",
+              "start_date": "2018-11-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-12-05",
+              "start_date": "2018-12-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-12-25",
+              "start_date": "2018-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-01-01",
+              "start_date": "2019-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-01-21",
+              "start_date": "2019-01-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-02-18",
+              "start_date": "2019-02-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-04-19",
+              "start_date": "2019-04-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-05-27",
+              "start_date": "2019-05-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-07-04",
+              "start_date": "2019-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-09-02",
+              "start_date": "2019-09-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-11-28",
+              "start_date": "2019-11-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-12-25",
+              "start_date": "2019-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-01-01",
+              "start_date": "2020-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-01-20",
+              "start_date": "2020-01-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-02-17",
+              "start_date": "2020-02-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-04-10",
+              "start_date": "2020-04-10",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-05-25",
+              "start_date": "2020-05-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-07-03",
+              "start_date": "2020-07-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-09-07",
+              "start_date": "2020-09-07",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-11-26",
+              "start_date": "2020-11-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-12-25",
+              "start_date": "2020-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-01-01",
+              "start_date": "2021-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-01-18",
+              "start_date": "2021-01-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-02-15",
+              "start_date": "2021-02-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-04-02",
+              "start_date": "2021-04-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-05-31",
+              "start_date": "2021-05-31",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-07-05",
+              "start_date": "2021-07-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-09-06",
+              "start_date": "2021-09-06",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-11-25",
+              "start_date": "2021-11-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-12-24",
+              "start_date": "2021-12-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-01-17",
+              "start_date": "2022-01-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-02-21",
+              "start_date": "2022-02-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-04-15",
+              "start_date": "2022-04-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-05-30",
+              "start_date": "2022-05-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-06-20",
+              "start_date": "2022-06-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-07-04",
+              "start_date": "2022-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-09-05",
+              "start_date": "2022-09-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-11-24",
+              "start_date": "2022-11-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-12-26",
+              "start_date": "2022-12-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-01-02",
+              "start_date": "2023-01-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-01-16",
+              "start_date": "2023-01-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-02-20",
+              "start_date": "2023-02-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-04-07",
+              "start_date": "2023-04-07",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-05-29",
+              "start_date": "2023-05-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-06-19",
+              "start_date": "2023-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-07-04",
+              "start_date": "2023-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-09-04",
+              "start_date": "2023-09-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-11-23",
+              "start_date": "2023-11-23",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-12-25",
+              "start_date": "2023-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-01-01",
+              "start_date": "2024-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-01-15",
+              "start_date": "2024-01-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-02-19",
+              "start_date": "2024-02-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-03-29",
+              "start_date": "2024-03-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-05-27",
+              "start_date": "2024-05-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-06-19",
+              "start_date": "2024-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-07-04",
+              "start_date": "2024-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-09-02",
+              "start_date": "2024-09-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-11-28",
+              "start_date": "2024-11-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-12-25",
+              "start_date": "2024-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-01-01",
+              "start_date": "2025-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-01-09",
+              "start_date": "2025-01-09",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-01-20",
+              "start_date": "2025-01-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-02-17",
+              "start_date": "2025-02-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-04-18",
+              "start_date": "2025-04-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-05-26",
+              "start_date": "2025-05-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-06-19",
+              "start_date": "2025-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-07-04",
+              "start_date": "2025-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-09-01",
+              "start_date": "2025-09-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-11-27",
+              "start_date": "2025-11-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-12-25",
+              "start_date": "2025-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-01-01",
+              "start_date": "2026-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-01-19",
+              "start_date": "2026-01-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-02-16",
+              "start_date": "2026-02-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-04-03",
+              "start_date": "2026-04-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-05-25",
+              "start_date": "2026-05-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-06-19",
+              "start_date": "2026-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-07-03",
+              "start_date": "2026-07-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-09-07",
+              "start_date": "2026-09-07",
+              "weekday_count": 1
+            }
+          ]
+        }
+      },
+      "deduplicated_row_count": 4208,
+      "raw_payload_file": "raw/GSPC.csv",
+      "raw_payload_sha256": "7396b836b9313ae9dc93c16719a38f646639afd0f003e700e3a21144d24b9769",
+      "raw_row_count": 4208,
+      "requested_end_date": "2026-09-26",
+      "requested_start_date": "2010-01-01",
+      "retrieved_at_utc": "2026-09-25T14:16:23+00:00",
+      "source": "Yahoo Finance",
+      "ticker": "^GSPC",
+      "valid_close_count": 4208
+    },
+    "vix3m_close": {
+      "actual_first_observation_date": "2010-01-04",
+      "actual_last_observation_date": "2026-09-25",
+      "data_quality": {
+        "conflicting_duplicate_observations": [],
+        "duplicate_date_count": 0,
+        "duplicate_dates_removed": [],
+        "input_non_monotonic": false,
+        "numeric_validity": {
+          "daily_move_over_100pct_count": 0,
+          "non_finite_value_count": 0,
+          "non_numeric_value_count": 0,
+          "non_positive_value_count": 0,
+          "numeric_values_valid": true
+        },
+        "unexpected_gaps": {
+          "method": "weekday candidates between first and last valid observation; exchange holidays remain explicit review candidates",
+          "potential_weekday_gap_count": 157,
+          "potential_weekday_gap_intervals": [
+            {
+              "end_date": "2010-01-18",
+              "start_date": "2010-01-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-02-15",
+              "start_date": "2010-02-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-04-02",
+              "start_date": "2010-04-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-05-31",
+              "start_date": "2010-05-31",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-07-05",
+              "start_date": "2010-07-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-09-06",
+              "start_date": "2010-09-06",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-11-25",
+              "start_date": "2010-11-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-12-24",
+              "start_date": "2010-12-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-01-17",
+              "start_date": "2011-01-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-02-21",
+              "start_date": "2011-02-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-04-22",
+              "start_date": "2011-04-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-05-30",
+              "start_date": "2011-05-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-07-04",
+              "start_date": "2011-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-09-05",
+              "start_date": "2011-09-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-11-24",
+              "start_date": "2011-11-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-12-26",
+              "start_date": "2011-12-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-01-02",
+              "start_date": "2012-01-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-01-16",
+              "start_date": "2012-01-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-02-20",
+              "start_date": "2012-02-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-04-06",
+              "start_date": "2012-04-06",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-05-28",
+              "start_date": "2012-05-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-07-04",
+              "start_date": "2012-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-09-03",
+              "start_date": "2012-09-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-10-30",
+              "start_date": "2012-10-29",
+              "weekday_count": 2
+            },
+            {
+              "end_date": "2012-11-22",
+              "start_date": "2012-11-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-12-25",
+              "start_date": "2012-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-01-01",
+              "start_date": "2013-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-01-21",
+              "start_date": "2013-01-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-02-18",
+              "start_date": "2013-02-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-03-29",
+              "start_date": "2013-03-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-05-27",
+              "start_date": "2013-05-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-07-04",
+              "start_date": "2013-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-09-02",
+              "start_date": "2013-09-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-11-28",
+              "start_date": "2013-11-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-12-25",
+              "start_date": "2013-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-01-01",
+              "start_date": "2014-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-01-20",
+              "start_date": "2014-01-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-02-17",
+              "start_date": "2014-02-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-04-18",
+              "start_date": "2014-04-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-05-26",
+              "start_date": "2014-05-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-07-04",
+              "start_date": "2014-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-09-01",
+              "start_date": "2014-09-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-11-27",
+              "start_date": "2014-11-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-12-25",
+              "start_date": "2014-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-01-01",
+              "start_date": "2015-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-01-19",
+              "start_date": "2015-01-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-02-16",
+              "start_date": "2015-02-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-04-03",
+              "start_date": "2015-04-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-05-25",
+              "start_date": "2015-05-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-07-03",
+              "start_date": "2015-07-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-09-07",
+              "start_date": "2015-09-07",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-11-26",
+              "start_date": "2015-11-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-12-25",
+              "start_date": "2015-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-01-01",
+              "start_date": "2016-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-01-18",
+              "start_date": "2016-01-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-02-15",
+              "start_date": "2016-02-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-03-25",
+              "start_date": "2016-03-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-05-30",
+              "start_date": "2016-05-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-07-04",
+              "start_date": "2016-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-09-05",
+              "start_date": "2016-09-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-11-24",
+              "start_date": "2016-11-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-12-26",
+              "start_date": "2016-12-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-01-02",
+              "start_date": "2017-01-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-01-16",
+              "start_date": "2017-01-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-02-20",
+              "start_date": "2017-02-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-04-14",
+              "start_date": "2017-04-14",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-05-29",
+              "start_date": "2017-05-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-07-04",
+              "start_date": "2017-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-09-04",
+              "start_date": "2017-09-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-11-23",
+              "start_date": "2017-11-23",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-12-25",
+              "start_date": "2017-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-01-01",
+              "start_date": "2018-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-01-15",
+              "start_date": "2018-01-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-02-19",
+              "start_date": "2018-02-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-03-30",
+              "start_date": "2018-03-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-05-28",
+              "start_date": "2018-05-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-07-04",
+              "start_date": "2018-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-09-03",
+              "start_date": "2018-09-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-11-22",
+              "start_date": "2018-11-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-12-05",
+              "start_date": "2018-12-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-12-25",
+              "start_date": "2018-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-01-01",
+              "start_date": "2019-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-01-21",
+              "start_date": "2019-01-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-02-18",
+              "start_date": "2019-02-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-04-19",
+              "start_date": "2019-04-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-05-27",
+              "start_date": "2019-05-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-07-04",
+              "start_date": "2019-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-09-02",
+              "start_date": "2019-09-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-11-28",
+              "start_date": "2019-11-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-12-25",
+              "start_date": "2019-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-01-01",
+              "start_date": "2020-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-01-20",
+              "start_date": "2020-01-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-02-17",
+              "start_date": "2020-02-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-04-10",
+              "start_date": "2020-04-10",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-05-25",
+              "start_date": "2020-05-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-07-03",
+              "start_date": "2020-07-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-09-07",
+              "start_date": "2020-09-07",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-11-26",
+              "start_date": "2020-11-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-12-25",
+              "start_date": "2020-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-01-01",
+              "start_date": "2021-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-01-18",
+              "start_date": "2021-01-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-02-15",
+              "start_date": "2021-02-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-04-02",
+              "start_date": "2021-04-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-05-31",
+              "start_date": "2021-05-31",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-07-05",
+              "start_date": "2021-07-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-09-06",
+              "start_date": "2021-09-06",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-11-25",
+              "start_date": "2021-11-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-12-24",
+              "start_date": "2021-12-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-01-17",
+              "start_date": "2022-01-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-02-21",
+              "start_date": "2022-02-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-04-15",
+              "start_date": "2022-04-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-05-30",
+              "start_date": "2022-05-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-06-20",
+              "start_date": "2022-06-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-07-04",
+              "start_date": "2022-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-09-05",
+              "start_date": "2022-09-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-11-24",
+              "start_date": "2022-11-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-12-26",
+              "start_date": "2022-12-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-01-02",
+              "start_date": "2023-01-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-01-16",
+              "start_date": "2023-01-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-02-20",
+              "start_date": "2023-02-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-04-07",
+              "start_date": "2023-04-07",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-05-29",
+              "start_date": "2023-05-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-06-19",
+              "start_date": "2023-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-07-04",
+              "start_date": "2023-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-09-04",
+              "start_date": "2023-09-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-11-23",
+              "start_date": "2023-11-23",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-12-25",
+              "start_date": "2023-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-01-01",
+              "start_date": "2024-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-01-15",
+              "start_date": "2024-01-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-02-19",
+              "start_date": "2024-02-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-03-29",
+              "start_date": "2024-03-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-05-27",
+              "start_date": "2024-05-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-06-19",
+              "start_date": "2024-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-07-04",
+              "start_date": "2024-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-09-02",
+              "start_date": "2024-09-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-11-28",
+              "start_date": "2024-11-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-12-25",
+              "start_date": "2024-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-01-01",
+              "start_date": "2025-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-01-09",
+              "start_date": "2025-01-09",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-01-20",
+              "start_date": "2025-01-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-02-17",
+              "start_date": "2025-02-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-04-18",
+              "start_date": "2025-04-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-05-26",
+              "start_date": "2025-05-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-06-19",
+              "start_date": "2025-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-07-04",
+              "start_date": "2025-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-09-01",
+              "start_date": "2025-09-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-11-27",
+              "start_date": "2025-11-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-12-25",
+              "start_date": "2025-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-01-01",
+              "start_date": "2026-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-01-19",
+              "start_date": "2026-01-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-02-16",
+              "start_date": "2026-02-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-04-03",
+              "start_date": "2026-04-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-05-25",
+              "start_date": "2026-05-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-06-19",
+              "start_date": "2026-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-07-03",
+              "start_date": "2026-07-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-09-07",
+              "start_date": "2026-09-07",
+              "weekday_count": 1
+            }
+          ]
+        }
+      },
+      "deduplicated_row_count": 4208,
+      "raw_payload_file": "raw/VIX3M.csv",
+      "raw_payload_sha256": "1ef5cc0d657868a426d74c350482ee1e1e3e99228cf978b59f2a584737b9d7d7",
+      "raw_row_count": 4208,
+      "requested_end_date": "2026-09-26",
+      "requested_start_date": "2010-01-01",
+      "retrieved_at_utc": "2026-09-25T14:16:23+00:00",
+      "source": "Yahoo Finance",
+      "ticker": "^VIX3M",
+      "valid_close_count": 4208
+    },
+    "vix9d_close": {
+      "actual_first_observation_date": "2011-01-03",
+      "actual_last_observation_date": "2026-09-25",
+      "data_quality": {
+        "conflicting_duplicate_observations": [],
+        "duplicate_date_count": 0,
+        "duplicate_dates_removed": [],
+        "input_non_monotonic": false,
+        "numeric_validity": {
+          "daily_move_over_100pct_count": 6,
+          "non_finite_value_count": 0,
+          "non_numeric_value_count": 0,
+          "non_positive_value_count": 0,
+          "numeric_values_valid": true
+        },
+        "unexpected_gaps": {
+          "method": "weekday candidates between first and last valid observation; exchange holidays remain explicit review candidates",
+          "potential_weekday_gap_count": 149,
+          "potential_weekday_gap_intervals": [
+            {
+              "end_date": "2011-01-17",
+              "start_date": "2011-01-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-02-21",
+              "start_date": "2011-02-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-04-22",
+              "start_date": "2011-04-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-05-30",
+              "start_date": "2011-05-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-07-04",
+              "start_date": "2011-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-09-05",
+              "start_date": "2011-09-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-11-24",
+              "start_date": "2011-11-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-12-26",
+              "start_date": "2011-12-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-01-02",
+              "start_date": "2012-01-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-01-16",
+              "start_date": "2012-01-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-02-20",
+              "start_date": "2012-02-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-04-06",
+              "start_date": "2012-04-06",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-05-28",
+              "start_date": "2012-05-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-07-04",
+              "start_date": "2012-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-09-03",
+              "start_date": "2012-09-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-10-30",
+              "start_date": "2012-10-29",
+              "weekday_count": 2
+            },
+            {
+              "end_date": "2012-11-22",
+              "start_date": "2012-11-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-12-25",
+              "start_date": "2012-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-01-01",
+              "start_date": "2013-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-01-21",
+              "start_date": "2013-01-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-02-18",
+              "start_date": "2013-02-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-03-29",
+              "start_date": "2013-03-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-05-27",
+              "start_date": "2013-05-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-07-04",
+              "start_date": "2013-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-09-02",
+              "start_date": "2013-09-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-11-28",
+              "start_date": "2013-11-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-12-25",
+              "start_date": "2013-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-01-01",
+              "start_date": "2014-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-01-20",
+              "start_date": "2014-01-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-02-17",
+              "start_date": "2014-02-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-04-18",
+              "start_date": "2014-04-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-05-26",
+              "start_date": "2014-05-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-07-04",
+              "start_date": "2014-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-09-01",
+              "start_date": "2014-09-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-11-27",
+              "start_date": "2014-11-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-12-25",
+              "start_date": "2014-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-01-01",
+              "start_date": "2015-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-01-19",
+              "start_date": "2015-01-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-02-16",
+              "start_date": "2015-02-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-04-03",
+              "start_date": "2015-04-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-05-25",
+              "start_date": "2015-05-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-07-03",
+              "start_date": "2015-07-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-09-07",
+              "start_date": "2015-09-07",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-11-26",
+              "start_date": "2015-11-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-12-25",
+              "start_date": "2015-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-01-01",
+              "start_date": "2016-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-01-18",
+              "start_date": "2016-01-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-02-15",
+              "start_date": "2016-02-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-03-25",
+              "start_date": "2016-03-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-05-30",
+              "start_date": "2016-05-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-07-04",
+              "start_date": "2016-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-09-05",
+              "start_date": "2016-09-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-11-24",
+              "start_date": "2016-11-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-12-26",
+              "start_date": "2016-12-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-01-02",
+              "start_date": "2017-01-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-01-16",
+              "start_date": "2017-01-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-02-20",
+              "start_date": "2017-02-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-04-14",
+              "start_date": "2017-04-14",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-05-29",
+              "start_date": "2017-05-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-07-04",
+              "start_date": "2017-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-09-04",
+              "start_date": "2017-09-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-11-23",
+              "start_date": "2017-11-23",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-12-25",
+              "start_date": "2017-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-01-01",
+              "start_date": "2018-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-01-15",
+              "start_date": "2018-01-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-02-19",
+              "start_date": "2018-02-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-03-30",
+              "start_date": "2018-03-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-05-28",
+              "start_date": "2018-05-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-07-04",
+              "start_date": "2018-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-09-03",
+              "start_date": "2018-09-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-11-22",
+              "start_date": "2018-11-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-12-05",
+              "start_date": "2018-12-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-12-25",
+              "start_date": "2018-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-01-01",
+              "start_date": "2019-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-01-21",
+              "start_date": "2019-01-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-02-18",
+              "start_date": "2019-02-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-04-19",
+              "start_date": "2019-04-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-05-27",
+              "start_date": "2019-05-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-07-04",
+              "start_date": "2019-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-09-02",
+              "start_date": "2019-09-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-11-28",
+              "start_date": "2019-11-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-12-25",
+              "start_date": "2019-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-01-01",
+              "start_date": "2020-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-01-20",
+              "start_date": "2020-01-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-02-17",
+              "start_date": "2020-02-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-04-10",
+              "start_date": "2020-04-10",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-05-25",
+              "start_date": "2020-05-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-07-03",
+              "start_date": "2020-07-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-09-07",
+              "start_date": "2020-09-07",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-11-26",
+              "start_date": "2020-11-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-12-25",
+              "start_date": "2020-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-01-01",
+              "start_date": "2021-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-01-18",
+              "start_date": "2021-01-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-02-15",
+              "start_date": "2021-02-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-04-02",
+              "start_date": "2021-04-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-05-31",
+              "start_date": "2021-05-31",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-07-05",
+              "start_date": "2021-07-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-09-06",
+              "start_date": "2021-09-06",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-11-25",
+              "start_date": "2021-11-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-12-24",
+              "start_date": "2021-12-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-01-17",
+              "start_date": "2022-01-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-02-21",
+              "start_date": "2022-02-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-04-15",
+              "start_date": "2022-04-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-05-30",
+              "start_date": "2022-05-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-06-20",
+              "start_date": "2022-06-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-07-04",
+              "start_date": "2022-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-09-05",
+              "start_date": "2022-09-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-11-24",
+              "start_date": "2022-11-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-12-26",
+              "start_date": "2022-12-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-01-02",
+              "start_date": "2023-01-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-01-16",
+              "start_date": "2023-01-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-02-20",
+              "start_date": "2023-02-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-04-07",
+              "start_date": "2023-04-07",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-05-29",
+              "start_date": "2023-05-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-06-19",
+              "start_date": "2023-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-07-04",
+              "start_date": "2023-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-09-04",
+              "start_date": "2023-09-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-11-23",
+              "start_date": "2023-11-23",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-12-25",
+              "start_date": "2023-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-01-01",
+              "start_date": "2024-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-01-15",
+              "start_date": "2024-01-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-02-19",
+              "start_date": "2024-02-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-03-29",
+              "start_date": "2024-03-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-05-27",
+              "start_date": "2024-05-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-06-19",
+              "start_date": "2024-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-07-04",
+              "start_date": "2024-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-09-02",
+              "start_date": "2024-09-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-11-28",
+              "start_date": "2024-11-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-12-25",
+              "start_date": "2024-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-01-01",
+              "start_date": "2025-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-01-09",
+              "start_date": "2025-01-09",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-01-20",
+              "start_date": "2025-01-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-02-17",
+              "start_date": "2025-02-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-04-18",
+              "start_date": "2025-04-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-05-26",
+              "start_date": "2025-05-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-06-19",
+              "start_date": "2025-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-07-04",
+              "start_date": "2025-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-09-01",
+              "start_date": "2025-09-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-11-27",
+              "start_date": "2025-11-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-12-25",
+              "start_date": "2025-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-01-01",
+              "start_date": "2026-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-01-19",
+              "start_date": "2026-01-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-02-16",
+              "start_date": "2026-02-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-04-03",
+              "start_date": "2026-04-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-05-25",
+              "start_date": "2026-05-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-06-19",
+              "start_date": "2026-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-07-03",
+              "start_date": "2026-07-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-09-07",
+              "start_date": "2026-09-07",
+              "weekday_count": 1
+            }
+          ]
+        }
+      },
+      "deduplicated_row_count": 3956,
+      "raw_payload_file": "raw/VIX9D.csv",
+      "raw_payload_sha256": "f93370a866ce497cf71614289a60242723851a5380485f1549699f92f823223d",
+      "raw_row_count": 3956,
+      "requested_end_date": "2026-09-26",
+      "requested_start_date": "2010-01-01",
+      "retrieved_at_utc": "2026-09-25T14:16:23+00:00",
+      "source": "Yahoo Finance",
+      "ticker": "^VIX9D",
+      "valid_close_count": 3956
+    },
+    "vix_close": {
+      "actual_first_observation_date": "2010-01-04",
+      "actual_last_observation_date": "2026-09-25",
+      "data_quality": {
+        "conflicting_duplicate_observations": [],
+        "duplicate_date_count": 0,
+        "duplicate_dates_removed": [],
+        "input_non_monotonic": false,
+        "numeric_validity": {
+          "daily_move_over_100pct_count": 1,
+          "non_finite_value_count": 0,
+          "non_numeric_value_count": 0,
+          "non_positive_value_count": 0,
+          "numeric_values_valid": true
+        },
+        "unexpected_gaps": {
+          "method": "weekday candidates between first and last valid observation; exchange holidays remain explicit review candidates",
+          "potential_weekday_gap_count": 155,
+          "potential_weekday_gap_intervals": [
+            {
+              "end_date": "2010-01-18",
+              "start_date": "2010-01-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-02-15",
+              "start_date": "2010-02-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-04-02",
+              "start_date": "2010-04-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-05-31",
+              "start_date": "2010-05-31",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-07-05",
+              "start_date": "2010-07-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-09-06",
+              "start_date": "2010-09-06",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-11-25",
+              "start_date": "2010-11-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-12-24",
+              "start_date": "2010-12-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-01-17",
+              "start_date": "2011-01-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-02-21",
+              "start_date": "2011-02-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-04-22",
+              "start_date": "2011-04-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-05-30",
+              "start_date": "2011-05-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-07-04",
+              "start_date": "2011-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-09-05",
+              "start_date": "2011-09-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-11-24",
+              "start_date": "2011-11-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-12-26",
+              "start_date": "2011-12-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-01-02",
+              "start_date": "2012-01-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-01-16",
+              "start_date": "2012-01-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-02-20",
+              "start_date": "2012-02-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-04-06",
+              "start_date": "2012-04-06",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-05-28",
+              "start_date": "2012-05-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-07-04",
+              "start_date": "2012-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-09-03",
+              "start_date": "2012-09-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-10-30",
+              "start_date": "2012-10-29",
+              "weekday_count": 2
+            },
+            {
+              "end_date": "2012-11-22",
+              "start_date": "2012-11-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-12-25",
+              "start_date": "2012-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-01-01",
+              "start_date": "2013-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-01-21",
+              "start_date": "2013-01-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-02-18",
+              "start_date": "2013-02-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-03-29",
+              "start_date": "2013-03-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-05-27",
+              "start_date": "2013-05-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-07-04",
+              "start_date": "2013-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-09-02",
+              "start_date": "2013-09-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-11-28",
+              "start_date": "2013-11-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-12-25",
+              "start_date": "2013-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-01-01",
+              "start_date": "2014-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-01-20",
+              "start_date": "2014-01-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-02-17",
+              "start_date": "2014-02-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-04-18",
+              "start_date": "2014-04-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-05-26",
+              "start_date": "2014-05-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-07-04",
+              "start_date": "2014-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-09-01",
+              "start_date": "2014-09-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-11-27",
+              "start_date": "2014-11-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-12-25",
+              "start_date": "2014-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-01-01",
+              "start_date": "2015-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-01-19",
+              "start_date": "2015-01-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-02-16",
+              "start_date": "2015-02-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-04-03",
+              "start_date": "2015-04-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-05-25",
+              "start_date": "2015-05-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-07-03",
+              "start_date": "2015-07-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-09-07",
+              "start_date": "2015-09-07",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-11-26",
+              "start_date": "2015-11-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-12-25",
+              "start_date": "2015-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-01-01",
+              "start_date": "2016-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-01-18",
+              "start_date": "2016-01-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-02-15",
+              "start_date": "2016-02-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-03-25",
+              "start_date": "2016-03-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-05-30",
+              "start_date": "2016-05-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-07-04",
+              "start_date": "2016-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-09-05",
+              "start_date": "2016-09-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-11-24",
+              "start_date": "2016-11-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-12-26",
+              "start_date": "2016-12-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-01-02",
+              "start_date": "2017-01-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-01-16",
+              "start_date": "2017-01-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-02-20",
+              "start_date": "2017-02-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-04-14",
+              "start_date": "2017-04-14",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-05-29",
+              "start_date": "2017-05-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-07-04",
+              "start_date": "2017-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-09-04",
+              "start_date": "2017-09-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-11-23",
+              "start_date": "2017-11-23",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-12-25",
+              "start_date": "2017-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-01-01",
+              "start_date": "2018-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-01-15",
+              "start_date": "2018-01-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-02-19",
+              "start_date": "2018-02-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-03-30",
+              "start_date": "2018-03-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-05-28",
+              "start_date": "2018-05-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-07-04",
+              "start_date": "2018-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-09-03",
+              "start_date": "2018-09-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-11-22",
+              "start_date": "2018-11-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-12-05",
+              "start_date": "2018-12-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-12-25",
+              "start_date": "2018-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-01-01",
+              "start_date": "2019-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-01-21",
+              "start_date": "2019-01-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-02-18",
+              "start_date": "2019-02-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-04-19",
+              "start_date": "2019-04-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-05-27",
+              "start_date": "2019-05-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-07-04",
+              "start_date": "2019-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-09-02",
+              "start_date": "2019-09-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-11-28",
+              "start_date": "2019-11-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-12-25",
+              "start_date": "2019-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-01-01",
+              "start_date": "2020-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-01-20",
+              "start_date": "2020-01-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-02-17",
+              "start_date": "2020-02-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-04-10",
+              "start_date": "2020-04-10",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-05-25",
+              "start_date": "2020-05-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-07-03",
+              "start_date": "2020-07-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-09-07",
+              "start_date": "2020-09-07",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-11-26",
+              "start_date": "2020-11-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-12-25",
+              "start_date": "2020-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-01-01",
+              "start_date": "2021-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-01-18",
+              "start_date": "2021-01-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-02-15",
+              "start_date": "2021-02-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-04-02",
+              "start_date": "2021-04-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-05-31",
+              "start_date": "2021-05-31",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-07-05",
+              "start_date": "2021-07-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-09-06",
+              "start_date": "2021-09-06",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-11-25",
+              "start_date": "2021-11-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-12-24",
+              "start_date": "2021-12-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-01-17",
+              "start_date": "2022-01-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-02-21",
+              "start_date": "2022-02-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-04-15",
+              "start_date": "2022-04-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-05-30",
+              "start_date": "2022-05-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-06-20",
+              "start_date": "2022-06-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-07-04",
+              "start_date": "2022-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-09-05",
+              "start_date": "2022-09-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-11-24",
+              "start_date": "2022-11-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-12-26",
+              "start_date": "2022-12-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-01-02",
+              "start_date": "2023-01-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-01-16",
+              "start_date": "2023-01-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-02-20",
+              "start_date": "2023-02-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-04-07",
+              "start_date": "2023-04-07",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-05-29",
+              "start_date": "2023-05-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-06-19",
+              "start_date": "2023-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-07-04",
+              "start_date": "2023-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-09-04",
+              "start_date": "2023-09-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-11-23",
+              "start_date": "2023-11-23",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-12-25",
+              "start_date": "2023-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-01-01",
+              "start_date": "2024-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-01-15",
+              "start_date": "2024-01-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-02-19",
+              "start_date": "2024-02-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-03-29",
+              "start_date": "2024-03-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-05-27",
+              "start_date": "2024-05-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-06-19",
+              "start_date": "2024-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-07-04",
+              "start_date": "2024-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-09-02",
+              "start_date": "2024-09-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-11-28",
+              "start_date": "2024-11-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-12-25",
+              "start_date": "2024-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-01-01",
+              "start_date": "2025-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-01-09",
+              "start_date": "2025-01-09",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-01-20",
+              "start_date": "2025-01-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-02-17",
+              "start_date": "2025-02-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-04-18",
+              "start_date": "2025-04-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-05-26",
+              "start_date": "2025-05-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-06-19",
+              "start_date": "2025-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-07-04",
+              "start_date": "2025-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-09-01",
+              "start_date": "2025-09-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-11-27",
+              "start_date": "2025-11-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-12-25",
+              "start_date": "2025-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-01-01",
+              "start_date": "2026-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-01-19",
+              "start_date": "2026-01-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-02-16",
+              "start_date": "2026-02-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-04-03",
+              "start_date": "2026-04-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-06-19",
+              "start_date": "2026-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-07-03",
+              "start_date": "2026-07-03",
+              "weekday_count": 1
+            }
+          ]
+        }
+      },
+      "deduplicated_row_count": 4210,
+      "raw_payload_file": "raw/VIX.csv",
+      "raw_payload_sha256": "4fdee072cd414657be3095dad439ce5bb724abbaf874746e3ad3757ddc9b6c51",
+      "raw_row_count": 4210,
+      "requested_end_date": "2026-09-26",
+      "requested_start_date": "2010-01-01",
+      "retrieved_at_utc": "2026-09-25T14:16:23+00:00",
+      "source": "Yahoo Finance",
+      "ticker": "^VIX",
+      "valid_close_count": 4210
+    },
+    "vvix_close": {
+      "actual_first_observation_date": "2010-01-04",
+      "actual_last_observation_date": "2026-09-25",
+      "data_quality": {
+        "conflicting_duplicate_observations": [],
+        "duplicate_date_count": 0,
+        "duplicate_dates_removed": [],
+        "input_non_monotonic": false,
+        "numeric_validity": {
+          "daily_move_over_100pct_count": 0,
+          "non_finite_value_count": 0,
+          "non_numeric_value_count": 0,
+          "non_positive_value_count": 0,
+          "numeric_values_valid": true
+        },
+        "unexpected_gaps": {
+          "method": "weekday candidates between first and last valid observation; exchange holidays remain explicit review candidates",
+          "potential_weekday_gap_count": 166,
+          "potential_weekday_gap_intervals": [
+            {
+              "end_date": "2010-01-18",
+              "start_date": "2010-01-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-02-15",
+              "start_date": "2010-02-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-04-02",
+              "start_date": "2010-04-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-05-31",
+              "start_date": "2010-05-31",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-07-05",
+              "start_date": "2010-07-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-09-06",
+              "start_date": "2010-09-06",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-11-11",
+              "start_date": "2010-11-11",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-11-25",
+              "start_date": "2010-11-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2010-12-24",
+              "start_date": "2010-12-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-01-17",
+              "start_date": "2011-01-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-02-21",
+              "start_date": "2011-02-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-04-22",
+              "start_date": "2011-04-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-05-30",
+              "start_date": "2011-05-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-07-04",
+              "start_date": "2011-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-09-05",
+              "start_date": "2011-09-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-11-24",
+              "start_date": "2011-11-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2011-12-26",
+              "start_date": "2011-12-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-01-02",
+              "start_date": "2012-01-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-01-16",
+              "start_date": "2012-01-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-02-20",
+              "start_date": "2012-02-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-04-06",
+              "start_date": "2012-04-06",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-05-28",
+              "start_date": "2012-05-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-07-04",
+              "start_date": "2012-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-09-03",
+              "start_date": "2012-09-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-10-30",
+              "start_date": "2012-10-29",
+              "weekday_count": 2
+            },
+            {
+              "end_date": "2012-11-22",
+              "start_date": "2012-11-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2012-12-25",
+              "start_date": "2012-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-01-01",
+              "start_date": "2013-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-01-21",
+              "start_date": "2013-01-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-02-18",
+              "start_date": "2013-02-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-03-29",
+              "start_date": "2013-03-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-05-27",
+              "start_date": "2013-05-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-07-04",
+              "start_date": "2013-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-09-02",
+              "start_date": "2013-09-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-11-28",
+              "start_date": "2013-11-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2013-12-25",
+              "start_date": "2013-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-01-01",
+              "start_date": "2014-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-01-20",
+              "start_date": "2014-01-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-02-17",
+              "start_date": "2014-02-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-04-18",
+              "start_date": "2014-04-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-05-26",
+              "start_date": "2014-05-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-07-04",
+              "start_date": "2014-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-09-01",
+              "start_date": "2014-09-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-11-27",
+              "start_date": "2014-11-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2014-12-25",
+              "start_date": "2014-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-01-01",
+              "start_date": "2015-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-01-19",
+              "start_date": "2015-01-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-02-16",
+              "start_date": "2015-02-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-04-03",
+              "start_date": "2015-04-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-05-25",
+              "start_date": "2015-05-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-07-03",
+              "start_date": "2015-07-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-09-07",
+              "start_date": "2015-09-07",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-11-26",
+              "start_date": "2015-11-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2015-12-25",
+              "start_date": "2015-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-01-01",
+              "start_date": "2016-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-01-18",
+              "start_date": "2016-01-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-02-15",
+              "start_date": "2016-02-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-03-25",
+              "start_date": "2016-03-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-05-30",
+              "start_date": "2016-05-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-07-04",
+              "start_date": "2016-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-09-05",
+              "start_date": "2016-09-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-11-24",
+              "start_date": "2016-11-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2016-12-26",
+              "start_date": "2016-12-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-01-02",
+              "start_date": "2017-01-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-01-16",
+              "start_date": "2017-01-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-02-20",
+              "start_date": "2017-02-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-04-14",
+              "start_date": "2017-04-14",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-05-29",
+              "start_date": "2017-05-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-07-04",
+              "start_date": "2017-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-09-04",
+              "start_date": "2017-09-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-11-23",
+              "start_date": "2017-11-23",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2017-12-25",
+              "start_date": "2017-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-01-01",
+              "start_date": "2018-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-01-15",
+              "start_date": "2018-01-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-02-19",
+              "start_date": "2018-02-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-03-30",
+              "start_date": "2018-03-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-05-28",
+              "start_date": "2018-05-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-07-04",
+              "start_date": "2018-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-09-03",
+              "start_date": "2018-09-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-11-22",
+              "start_date": "2018-11-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-12-05",
+              "start_date": "2018-12-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2018-12-25",
+              "start_date": "2018-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-01-01",
+              "start_date": "2019-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-01-21",
+              "start_date": "2019-01-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-02-18",
+              "start_date": "2019-02-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-04-19",
+              "start_date": "2019-04-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-05-27",
+              "start_date": "2019-05-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-07-05",
+              "start_date": "2019-07-04",
+              "weekday_count": 2
+            },
+            {
+              "end_date": "2019-09-02",
+              "start_date": "2019-09-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-11-28",
+              "start_date": "2019-11-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2019-12-25",
+              "start_date": "2019-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-01-01",
+              "start_date": "2020-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-01-20",
+              "start_date": "2020-01-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-02-17",
+              "start_date": "2020-02-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-04-10",
+              "start_date": "2020-04-10",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-05-25",
+              "start_date": "2020-05-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-06-11",
+              "start_date": "2020-06-11",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-07-03",
+              "start_date": "2020-07-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-09-07",
+              "start_date": "2020-09-07",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-11-26",
+              "start_date": "2020-11-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2020-12-25",
+              "start_date": "2020-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-01-01",
+              "start_date": "2021-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-01-18",
+              "start_date": "2021-01-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-01-22",
+              "start_date": "2021-01-22",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-02-15",
+              "start_date": "2021-02-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-02-17",
+              "start_date": "2021-02-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-04-02",
+              "start_date": "2021-04-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-05-05",
+              "start_date": "2021-05-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-05-11",
+              "start_date": "2021-05-11",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-05-20",
+              "start_date": "2021-05-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-05-25",
+              "start_date": "2021-05-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-05-31",
+              "start_date": "2021-05-31",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-07-05",
+              "start_date": "2021-07-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-09-06",
+              "start_date": "2021-09-06",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-11-25",
+              "start_date": "2021-11-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2021-12-24",
+              "start_date": "2021-12-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-01-17",
+              "start_date": "2022-01-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-02-21",
+              "start_date": "2022-02-21",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-04-15",
+              "start_date": "2022-04-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-05-30",
+              "start_date": "2022-05-30",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-06-20",
+              "start_date": "2022-06-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-07-04",
+              "start_date": "2022-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-09-05",
+              "start_date": "2022-09-05",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-11-24",
+              "start_date": "2022-11-24",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2022-12-26",
+              "start_date": "2022-12-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-01-02",
+              "start_date": "2023-01-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-01-16",
+              "start_date": "2023-01-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-02-20",
+              "start_date": "2023-02-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-04-07",
+              "start_date": "2023-04-07",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-05-29",
+              "start_date": "2023-05-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-06-19",
+              "start_date": "2023-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-07-04",
+              "start_date": "2023-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-09-04",
+              "start_date": "2023-09-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-11-23",
+              "start_date": "2023-11-23",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2023-12-25",
+              "start_date": "2023-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-01-01",
+              "start_date": "2024-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-01-15",
+              "start_date": "2024-01-15",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-02-19",
+              "start_date": "2024-02-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-03-29",
+              "start_date": "2024-03-29",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-05-27",
+              "start_date": "2024-05-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-06-19",
+              "start_date": "2024-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-07-04",
+              "start_date": "2024-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-09-02",
+              "start_date": "2024-09-02",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-11-28",
+              "start_date": "2024-11-28",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2024-12-25",
+              "start_date": "2024-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-01-01",
+              "start_date": "2025-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-01-09",
+              "start_date": "2025-01-09",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-01-20",
+              "start_date": "2025-01-20",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-02-17",
+              "start_date": "2025-02-17",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-04-18",
+              "start_date": "2025-04-18",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-05-26",
+              "start_date": "2025-05-26",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-06-19",
+              "start_date": "2025-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-07-04",
+              "start_date": "2025-07-04",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-09-01",
+              "start_date": "2025-09-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-11-27",
+              "start_date": "2025-11-27",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2025-12-25",
+              "start_date": "2025-12-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-01-01",
+              "start_date": "2026-01-01",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-01-19",
+              "start_date": "2026-01-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-02-16",
+              "start_date": "2026-02-16",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-04-03",
+              "start_date": "2026-04-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-05-25",
+              "start_date": "2026-05-25",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-06-19",
+              "start_date": "2026-06-19",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-07-03",
+              "start_date": "2026-07-03",
+              "weekday_count": 1
+            },
+            {
+              "end_date": "2026-09-07",
+              "start_date": "2026-09-07",
+              "weekday_count": 1
+            }
+          ]
+        }
+      },
+      "deduplicated_row_count": 4199,
+      "raw_payload_file": "raw/VVIX.csv",
+      "raw_payload_sha256": "927b32dc50611a31c29e8dc68abf8cce6764c00e46b67f77af36197988164b01",
+      "raw_row_count": 4199,
+      "requested_end_date": "2026-09-26",
+      "requested_start_date": "2010-01-01",
+      "retrieved_at_utc": "2026-09-25T14:16:23+00:00",
+      "source": "Yahoo Finance",
+      "ticker": "^VVIX",
+      "valid_close_count": 4199
+    }
+  },
+  "snapshot": {
+    "created": true,
+    "immutable": true,
+    "relative_path": "snapshots/9b79222c02519b48106645b28ef4cb7142baad9879f55b459d945c94167f4532",
+    "snapshot_id": "9b79222c02519b48106645b28ef4cb7142baad9879f55b459d945c94167f4532"
+  },
+  "source": "Yahoo Finance",
+  "status": "complete",
+  "unavailable_series": {}
+}
