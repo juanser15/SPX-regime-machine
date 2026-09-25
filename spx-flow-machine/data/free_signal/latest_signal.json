@@ -6,7 +6,7 @@
   "confidence_score": 32.2664683973991,
   "data_lane": "AUGMENTED",
   "data_quality": "COMPLETE",
-  "data_snapshot_id": "57061fcda993ca8e6dd020c5c28457cb9a797c06fee6904339b68d773622d37b",
+  "data_snapshot_id": "b6a8cc29cc6fcc9d1da7b26491b7b8a8ee0fa5725d4a89a693a7038a9eb6fa07",
   "date": "2026-09-24",
   "deployable": false,
   "missing_component_reasons": {},
@@ -17,7 +17,7 @@
   "probability_status": "NOT_CALIBRATED",
   "regime": "TRANSITION / NEUTRAL",
   "research_status": "RESEARCH_ONLY",
-  "retrieved_at_utc": "2026-09-25T19:24:37+00:00",
+  "retrieved_at_utc": "2026-09-25T22:05:48+00:00",
   "risk_signal": "NEUTRAL",
   "score_type": "causal_empirical_score_not_probability",
   "tail_risk_hazard_score": 44.36000000000001
