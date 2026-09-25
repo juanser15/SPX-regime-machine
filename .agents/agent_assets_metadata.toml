@@ -14,3 +14,17 @@ mtime_ms = 1789538296815
 storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:a753d1cc-f356-4cda-ad3b-a859eab95554/5ac05b69-10f8-4373-9e54-17fc129e7bd6/b2afa3d1-a3ee-46dc-b8a8-93a3a1249684"
 storage_version_token = "1789538302684758"
 content_type = "text/markdown"
+
+[[outputs]]
+id = "VoL10bapxyC7xzpeObbmN"
+uri = "file://SPX_REGIME_MACHINE_ESTADO_ACTUAL.md"
+type = "text"
+title = "Estado actual de SPX Regime Machine"
+description = "Documento detallado en Markdown: entradas, transformaciones, salidas, API, dashboard, producción y limitaciones."
+logical_id = "afad614a-a3fe-481c-b2fc-e9cfac806b6a"
+content_hash = "sha256:c84b402bcda45af6378d38f9bfe74130d47c53e5b107f7ca83068c105e87e282"
+size = 26227
+mtime_ms = 1790341789862
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:a753d1cc-f356-4cda-ad3b-a859eab95554/afad614a-a3fe-481c-b2fc-e9cfac806b6a/bc7699f3-fdd6-4370-97a7-bf2c741c9609"
+storage_version_token = "1790341803252647"
+content_type = "text/markdown"
