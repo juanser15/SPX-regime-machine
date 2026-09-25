@@ -36,16 +36,20 @@ from src.label_returns import label_returns
 from src.score_flow import compute_flow_score
 from src.evaluate_signal import full_evaluation
 from src.daily_signal import DEFAULT_START, load_persisted_signal, refresh_free_signal
+from src.free_signal_view import (
+    pm_action, tail_hedge_status, short_drivers, session_date,
+    retrieved_timestamp, score_label,
+)
 from src import plots
 
 
 # ── Page config ──────────────────────────────────────────────────────────────
 
 st.set_page_config(
-    page_title="SPX Flow Machine",
+    page_title="SPX Daily Regime | SPX Flow Machine",
     page_icon="⚡",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
 
@@ -126,6 +130,83 @@ if refresh_free:
         free_refresh_error = str(error)
 
 
+# ── FREE real-data daily signal ───────────────────────────────────────────────
+
+st.title("SPX Daily Regime")
+if free_refresh_error:
+    st.error(f"Yahoo refresh failed: {free_refresh_error}")
+
+free_latest, free_history = load_persisted_signal(FREE_SIGNAL_DIR)
+if free_latest is None:
+    st.warning("No daily signal is available. No portfolio action is indicated.")
+    st.caption("The optional Yahoo refresh is in Controls; no synthetic intraday data is used here.")
+else:
+    with st.container(border=True):
+        st.caption("FREE · DAILY SIGNAL · YAHOO HISTORICAL RESEARCH")
+        st.markdown(f"## {pm_action(free_latest.get('risk_signal'))}")
+        st.write(f"**Tail Hedge:** {tail_hedge_status(free_latest.get('tail_risk_hazard_score'))}")
+        st.write(
+            f"**Confidence:** {free_latest.get('confidence') or 'Unavailable'}"
+            f"  ·  **Data quality:** {free_latest.get('data_quality') or 'Unavailable'}"
+        )
+        st.caption(
+            f"As-of session: {session_date(free_latest.get('date'))}"
+            f" · Source retrieved: {retrieved_timestamp(free_latest.get('retrieved_at_utc'))}"
+        )
+        drivers = short_drivers(free_latest.get("primary_drivers"))
+        if drivers:
+            st.markdown("**Main drivers**\n\n" + "\n".join(f"- {driver}" for driver in drivers))
+        else:
+            st.caption("No drivers available.")
+
+    with st.expander("View Analysis"):
+        st.caption(
+            "These are empirical stress scores, not calibrated probabilities. "
+            "Tail Hedge is a display status based on the existing tail score: "
+            "OFF ≤35, WATCH >35 and <65, ACTIVE ≥65. It is not a separate hedge model or execution instruction."
+        )
+        st.write(f"**Regime:** {free_latest.get('regime') or 'Unavailable'}")
+        st.write(f"**Overall stress score:** {score_label(free_latest.get('overall_stress_score'))}")
+        st.write(f"**Body / repricing stress score:** {score_label(free_latest.get('body_stress_score'))}")
+        st.write(f"**Tail stress / hazard score:** {score_label(free_latest.get('tail_risk_hazard_score'))}")
+        if "recovery_score" in free_latest and pd.notna(free_latest["recovery_score"]):
+            st.write(f"**Recovery score:** {score_label(free_latest['recovery_score'])}")
+        st.markdown("**Model & data quality**")
+        st.write(f"Model: {free_latest.get('model_version') or 'Unavailable'}")
+        st.write(f"Data lane: {free_latest.get('data_lane') or 'Unavailable'}")
+        st.write(
+            f"Confidence score: {score_label(free_latest.get('confidence_score'))}"
+            f" · Available components: {free_latest.get('available_component_count', 'Unavailable')}/9"
+        )
+        st.write(f"Score type: {free_latest.get('score_type') or 'Empirical score'}")
+        st.write(f"Probability status: {free_latest.get('probability_status') or 'NOT_CALIBRATED'}")
+        st.write(f"Missing inputs: {free_latest.get('missing_inputs') or 'None reported'}")
+        st.caption("Yahoo historical data is research-only; not a recorded live portfolio instruction.")
+
+        st.markdown("#### Recent signal history")
+        if free_history.empty:
+            st.caption("No recent history available.")
+        else:
+            for _, row in free_history.tail(5).iloc[::-1].iterrows():
+                with st.container(border=True):
+                    st.markdown(f"**{session_date(row['date'])} · {pm_action(row.get('risk_signal'))}**")
+                    st.caption(
+                        f"Tail Hedge: {tail_hedge_status(row.get('tail_risk_hazard_score'))}"
+                        f" · Confidence: {row.get('confidence') or 'Unavailable'}"
+                    )
+
+
+# ── Legacy synthetic intraday research (unchanged) ───────────────────────────
+
+st.markdown("---")
+st.caption("The intraday options-flow research below remains fully synthetic.")
+st.markdown(
+    "<h2 style='margin-bottom:0'>⚡ SPX Flow Machine</h2>"
+    "<p style='color:#8B8FA8;font-size:15px;margin-top:4px'>"
+    "Options flow → directional pressure → 5m/15m forward returns</p>",
+    unsafe_allow_html=True,
+)
+
 @st.cache_data(show_spinner=False)
 def run_pipeline(seed: int):
     spx_df = generate_spx_price(seed=seed)
@@ -148,80 +229,7 @@ eval_results = full_evaluation(
     horizon=horizon,
 )
 
-
-# ── Helper: latest valid bar ──────────────────────────────────────────────────
-
 latest = bars.dropna(subset=["flow_score"]).iloc[-1] if len(bars) > 0 else None
-
-
-# ── Header ────────────────────────────────────────────────────────────────────
-
-st.markdown(
-    "<h1 style='margin-bottom:0'>⚡ SPX Flow Machine</h1>"
-    "<p style='color:#8B8FA8;font-size:15px;margin-top:4px'>"
-    "Options flow → directional pressure → 5m/15m forward returns</p>",
-    unsafe_allow_html=True,
-)
-st.markdown("---")
-
-
-# ── FREE real-data daily signal ───────────────────────────────────────────────
-
-st.subheader("FREE Daily Risk Signal — Real Yahoo Data")
-if free_refresh_error:
-    st.error(f"Yahoo refresh failed: {free_refresh_error}")
-
-free_latest, free_history = load_persisted_signal(FREE_SIGNAL_DIR)
-if free_latest is None:
-    st.info(
-        "No persisted real daily signal yet. Use “Refresh Yahoo signal” in the sidebar."
-    )
-else:
-    f1, f2, f3, f4, f5 = st.columns(5)
-    f1.metric("Risk signal", str(free_latest["risk_signal"]))
-    f2.metric("Regime", str(free_latest["regime"]))
-    f3.metric(
-        "Overall stress",
-        f"{float(free_latest['overall_stress_score']):.1f}/100",
-    )
-    f4.metric(
-        "Body stress",
-        f"{float(free_latest['body_stress_score']):.1f}/100",
-    )
-    tail_value = free_latest.get("tail_risk_hazard_score")
-    f5.metric(
-        "Tail-risk score",
-        f"{float(tail_value):.1f}/100" if tail_value is not None else "Unavailable",
-    )
-    st.caption(
-        f"As-of {free_latest['date']} · {free_latest['data_lane']} · "
-        f"Confidence {free_latest['confidence']} "
-        f"({float(free_latest['confidence_score']):.1f}/100) · "
-        f"Data quality: {free_latest['data_quality']} · "
-        "Scores are causal empirical ranks, not calibrated probabilities."
-    )
-    st.write(f"**Main drivers:** {free_latest['primary_drivers']}")
-    missing = free_latest.get("missing_inputs")
-    if missing:
-        st.warning(f"Explicitly unavailable at current as-of: {missing}")
-
-    recent = free_history[
-        [
-            "date",
-            "risk_signal",
-            "regime",
-            "overall_stress_score",
-            "body_stress_score",
-            "tail_risk_hazard_score",
-            "confidence",
-            "data_quality",
-        ]
-    ].tail(10)
-    st.dataframe(recent, use_container_width=True, hide_index=True)
-
-st.markdown("---")
-st.caption("The intraday options-flow research below remains fully synthetic.")
-st.markdown("---")
 
 
 # ── KPI cards ─────────────────────────────────────────────────────────────────
