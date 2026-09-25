@@ -27,6 +27,8 @@ class RealSignalBundle:
     missing_inputs: list[str]
     source: str
     components: list[dict[str, object]]
+    latest_observation_dates: dict[str, str | None]
+    current_failure: str | None
 
 
 def load_verified_real_signal(output_dir: Path) -> RealSignalBundle:
@@ -82,10 +84,25 @@ def load_verified_real_signal(output_dir: Path) -> RealSignalBundle:
             raise ValueError(f"Persisted {field} does not match verified real inputs.")
     if latest.get("risk_signal") != score_row["risk_signal"]:
         raise ValueError("The persisted signal action does not match verified real inputs.")
+    failure = None
+    status_path = output_dir / "refresh_status.json"
+    if status_path.exists():
+        status = json.loads(status_path.read_text())
+        if (
+            status.get("status") == "insufficient_real_data"
+            and status.get("published_signal_snapshot_id") == signal_id
+            and str(status.get("date", "")) >= latest["date"]
+        ):
+            failure = str(status["reason"])
     return RealSignalBundle(
         latest=latest, history=history, canonical=canonical, input_row=input_row,
         missing_inputs=missing, source=data_manifest["source"],
         components=component_details(score_row),
+        latest_observation_dates={
+            field: details.get("actual_last_observation_date")
+            for field, details in data_manifest.get("series", {}).items()
+        },
+        current_failure=failure,
     )
 
 
@@ -174,7 +191,8 @@ def has_real_tail_inputs(row: pd.Series) -> bool:
 
 
 def decision_for_display(
-    signal: dict, input_row: pd.Series, now: datetime | None = None
+    signal: dict, input_row: pd.Series, now: datetime | None = None,
+    current_failure: str | None = None,
 ) -> tuple[str, bool, str | None]:
     """Presentation gate only: never present incomplete/stale research as today's action."""
     now = now or datetime.now(timezone.utc)
@@ -183,15 +201,22 @@ def decision_for_display(
     )
     if retrieved.tzinfo is None:
         raise ValueError("Real input retrieval time has no timezone.")
+    unavailable = "SIGNAL UNAVAILABLE — DATA FAILURE / INSUFFICIENT REAL DATA"
+    if current_failure:
+        return unavailable, False, current_failure
+    if (pd.isna(input_row.get("spx_close"))
+            or pd.isna(signal.get("overall_stress_score"))
+            or not signal.get("available_component_count")):
+        return unavailable, False, "Required real SPX close or score components are unavailable."
     session = datetime.fromisoformat(session_date(signal["date"])).date()
     available_at = datetime.combine(session, time(16), ZoneInfo("America/New_York"))
     available_at += timedelta(hours=6)
+    if retrieved < available_at:
+        return unavailable, False, "Yahoo inputs were retrieved before this session was completed."
     if now < available_at:
-        return "HOLD / NO ACTION", False, "The daily session is not yet eligible as a completed signal."
+        return "SIGNAL UNAVAILABLE — SESSION INCOMPLETE", False, "The daily session is not yet eligible as a completed signal."
     if retrieved > now or now - retrieved > FRESHNESS_LIMIT:
-        return "HOLD / NO ACTION", False, "The last real-data snapshot is stale; no current action is available."
-    if pd.isna(input_row.get("spx_close")):
-        return "HOLD / NO ACTION", False, "No observed SPX close for this session; no current action is available."
+        return unavailable, False, "The last real-data snapshot is stale; no current action is available."
     if signal.get("risk_signal") not in ("RISK-ON", "NEUTRAL", "DE-RISK"):
-        return "HOLD / NO ACTION", False, "The model has no valid daily action for this session."
+        return unavailable, False, "The model has no valid daily action for this session."
     return pm_action(signal["risk_signal"]), True, None

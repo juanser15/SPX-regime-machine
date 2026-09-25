@@ -181,11 +181,17 @@ export async function loadVerifiedSignalsFrom(directory: string): Promise<{
   dataManifest: JsonObject;
   coverage: JsonObject;
 }> {
-  const historyPayload = await readFile(
-    resolve(directory, "signal_history.csv"),
-    "utf8",
-  );
-  const signalManifest = await readJson(directory, "signal_manifest.json");
+  const pointer = await readJson(directory, "signal_manifest.json");
+  const signalId = requiredString(pointer, "signal_snapshot_id");
+  if (!/^[a-f0-9]{64}$/.test(signalId)) {
+    throw new Error("Invalid signal snapshot identity.");
+  }
+  const signalDir = resolve(directory, "snapshots", signalId);
+  const signalManifest = await readJson(signalDir, "signal_manifest.json");
+  if (requiredString(signalManifest, "signal_snapshot_id") !== signalId) {
+    throw new Error("Published signal pointer does not match its immutable snapshot.");
+  }
+  const historyPayload = await readFile(resolve(signalDir, "signal_history.csv"), "utf8");
   const expectedHash = requiredString(
     signalManifest,
     "signal_history_sha256",
@@ -205,7 +211,7 @@ export async function loadVerifiedSignalsFrom(directory: string): Promise<{
     ),
   );
 
-  const latestMetadata = await readJson(directory, "latest_signal.json");
+  const latestMetadata = await readJson(signalDir, "latest_signal.json");
   const latest = toObservation(latestMetadata);
   const lastHistorical = history.at(-1);
   if (!lastHistorical || !observationsMatch(latest, lastHistorical)) {
@@ -214,10 +220,24 @@ export async function loadVerifiedSignalsFrom(directory: string): Promise<{
     );
   }
 
-  const [dataManifest, coverage] = await Promise.all([
-    readJson(directory, "daily_data/metadata_manifest.json"),
-    readJson(directory, "daily_data/coverage_report.json"),
+  const inputId = requiredString(signalManifest, "input_data_snapshot_id");
+  if (!/^[a-f0-9]{64}$/.test(inputId)) {
+    throw new Error("Invalid Yahoo input snapshot identity.");
+  }
+  const inputDir = resolve(directory, "daily_data", "snapshots", inputId);
+  const [dataManifest, coverage, canonical] = await Promise.all([
+    readJson(inputDir, "metadata_manifest.json"),
+    readJson(inputDir, "coverage_report.json"),
+    readFile(resolve(inputDir, "canonical_daily.csv")),
   ]);
+  if (
+    requiredString(dataManifest, "source") !== "Yahoo Finance" ||
+    requiredString(dataManifest, "canonical_sha256") !== createHash("sha256").update(canonical).digest("hex") ||
+    requiredString(latestMetadata, "data_snapshot_id") !== inputId ||
+    requiredString(latestMetadata, "retrieved_at_utc") !== requiredString(dataManifest, "retrieved_at_utc")
+  ) {
+    throw new Error("Published signal has mismatched immutable Yahoo input provenance.");
+  }
   return {
     latest,
     latestMetadata,

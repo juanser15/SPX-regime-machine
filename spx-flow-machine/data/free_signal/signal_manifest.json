@@ -8,23 +8,17 @@
     "vvix_close"
   ],
   "causality": "Trailing-only rolling calculations; no smoothing, Viterbi, future labels, imputation, or full-sample parameter estimation.",
-  "current_missing_inputs": [
-    "spx_close",
-    "vix9d_close",
-    "vix3m_close",
-    "vvix_close",
-    "skew_close"
-  ],
-  "data_lane": "CORE_FREE_DEGRADED",
+  "current_missing_inputs": [],
+  "data_lane": "AUGMENTED",
   "decision_bands": {
     "DE-RISK": "overall_stress_score >= 65",
     "NEUTRAL": "35 < overall_stress_score < 65",
     "RISK-ON": "overall_stress_score <= 35"
   },
   "deployable": false,
-  "generated_at_utc": "2026-09-25T13:29:51+00:00",
-  "input_data_manifest": "daily_data/metadata_manifest.json",
-  "input_data_snapshot_id": "8cb1a1151ee79a37d5e5627b72d6fe60f0fbd68d7218e47ea9a20f267f652f33",
+  "generated_at_utc": "2026-09-25T14:16:23+00:00",
+  "input_data_manifest": "daily_data/snapshots/9b79222c02519b48106645b28ef4cb7142baad9879f55b459d945c94167f4532/metadata_manifest.json",
+  "input_data_snapshot_id": "9b79222c02519b48106645b28ef4cb7142baad9879f55b459d945c94167f4532",
   "input_source": "Yahoo Finance historical daily (not live)",
   "latest_signal_file": "latest_signal.json",
   "model_version": "free_daily_regime_v1",
@@ -42606,28 +42600,6 @@
       "missing_component_reasons": {},
       "missing_inputs": [],
       "research_status": "RESEARCH_ONLY"
-    },
-    {
-      "component_quality": "DEGRADED",
-      "data_lane": "CORE_FREE_DEGRADED",
-      "data_quality": "DEGRADED_MISSING_INPUTS",
-      "date": "2026-09-25",
-      "deployable": false,
-      "missing_component_reasons": {
-        "skew_close": "missing Close for this date",
-        "spx_close": "missing Close for this date",
-        "vix3m_close": "missing Close for this date",
-        "vix9d_close": "missing Close for this date",
-        "vvix_close": "missing Close for this date"
-      },
-      "missing_inputs": [
-        "spx_close",
-        "vix9d_close",
-        "vix3m_close",
-        "vvix_close",
-        "skew_close"
-      ],
-      "research_status": "RESEARCH_ONLY"
     }
   ],
   "requested_end_date": "2026-09-26",
@@ -42635,8 +42607,8 @@
   "research_status": "RESEARCH_ONLY",
   "score_semantics": "Empirical trailing percentile scores on a 0-100 stress scale; not calibrated probabilities.",
   "signal_history_file": "signal_history.csv",
-  "signal_history_sha256": "8af6bfdd10d43b2dfb7eac46ef26a08e96a7733979758ac7e8175391e6bf458e",
-  "signal_snapshot_id": "58b4013c0e11063b27e1ba2d3bb32b065a4a8dd00ea845a21a1a39dd5a1bc66f",
+  "signal_history_sha256": "8340c870b55286c21821be2dd1f8f29af66c5fd3f2f9935b1ef7462a76d9aaaa",
+  "signal_snapshot_id": "ab1a54dee9e45a8339e7fafdd6a7e158ea329fc1f570fa6aa58b3cf64c7fa27d",
   "status": "degraded",
   "unavailable_series": {}
 }
