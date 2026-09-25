@@ -1,0 +1,13 @@
+{
+  "files": {
+    "oos_predictions.csv": "00250a9ac38340dba08d8a9cd3ffc651ee290d86f3d09ea0ded9207e339a6363",
+    "reconstructed_states.csv": "d6b03470fdd232110339b1c48cc66b263904aa7107fcbeb29ef077593d5a2349",
+    "report.json": "ff07858b3d1df332dc0645f7b474ea1cc570793308b1e82991c18ade406546c2",
+    "report.md": "e9444620a9fc2402a3f4272100a697556bd87e429a99602c04e74d357b1ad840"
+  },
+  "input_snapshot_id": "57061fcda993ca8e6dd020c5c28457cb9a797c06fee6904339b68d773622d37b",
+  "signal_snapshot_id": "8bb776ebdb3b34b0ee3917ae5549568f4baaa97fcae6576a7eac5d8471af431f",
+  "source_canonical_sha256": "5c8a2169fb28636013c094cf60e862df768ef32b5f4762d46cd1537d0343e2ec",
+  "source_signal_sha256": "8340c870b55286c21821be2dd1f8f29af66c5fd3f2f9935b1ef7462a76d9aaaa",
+  "status": "RESEARCH RECONSTRUCTION / SHADOW ONLY"
+}
