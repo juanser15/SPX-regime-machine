@@ -23,6 +23,7 @@ from src.free_signal_view import (
     session_date,
     tail_hedge_status,
 )
+from src.regime_outlook_view import load_shadow_report
 
 
 st.set_page_config(
@@ -220,3 +221,78 @@ if st.toggle("View Analysis"):
                     st.rerun()
                 except Exception as error:
                     st.error(f"Yahoo refresh failed; no substitute data was used: {error}")
+
+with st.expander("Regime Outlook — RESEARCH / SHADOW"):
+    st.error("NOT VALIDATED / NOT FOR PORTFOLIO ACTION")
+    st.caption(
+        "Separate, retrospective research only. The current-state action above remains authoritative. "
+        "These are not historical live forecasts or a prediction of the next regime."
+    )
+    if bundle is None:
+        st.info("No verified current-state snapshot is available for a shadow research report.")
+    else:
+        try:
+            outlook, report_text = load_shadow_report(
+                Path(__file__).parent / "research" / "regime_outlook",
+                bundle.signal_snapshot_id, latest["data_snapshot_id"], FREE_SIGNAL_DIR,
+            )
+        except (OSError, ValueError, KeyError, json.JSONDecodeError) as error:
+            st.warning(f"No matching verified shadow report: {error}")
+        else:
+            horizon = st.selectbox("Research horizon (trading sessions)", ("1", "3", "5"),
+                                   format_func=lambda value: f"{value}D")
+            result = outlook["horizons"][horizon]
+            st.markdown(f"**{horizon}D recommendation: {result['recommendation']}**")
+            st.write(result["recommendation_reason"])
+            st.caption(
+                f"{result['n_common_oos_origins']:,} common date-ordered OOS origins "
+                f"({result['first_oos_origin']}–{result['last_oos_origin']}); "
+                f"{result['folds']} chronological test blocks. "
+                f"{result['counts']['distinct_one_step_changes']} distinct adjacent state changes. "
+                "Historical Yahoo vintages were not captured at each session."
+            )
+            for model in ("persistence", "unconditional", "markov", "logistic"):
+                metric = result["metrics"][model]
+                with st.container(border=True):
+                    st.markdown(f"**{model.title()} · transition scores**")
+                    st.caption(
+                        f"Log loss {metric['log_loss']:.3f} · Multiclass Brier "
+                        f"{metric['multiclass_brier']:.3f} · Calibration "
+                        f"{'pass' if metric['calibration_pass'] else 'fail'} · "
+                        f"Mean max score {metric['mean_max_score']:.2f}"
+                    )
+            st.caption(
+                "Destination frequencies: " +
+                " · ".join(
+                    f"{state.replace('NEUTRAL', 'HOLD / NEUTRAL')} "
+                    f"{count:,}"
+                    for state, count in result["counts"]["destination_class_counts"].items()
+                )
+            )
+            for model in ("markov", "logistic"):
+                lead = result["lead_behavior"][model]
+                medians = lead["median_de_risk_score_prior_sessions"]
+                alarm = lead["false_alarms"][horizon]
+                st.caption(
+                    f"{model.title()} · DE-RISK entry lead sample: "
+                    f"{lead['matched_distinct_de_risk_entries']} distinct entries · "
+                    f"median scores at −5/−3/−1 sessions: "
+                    + " / ".join(
+                        f"{medians[f'minus_{n}']:.2f}" if medians[f"minus_{n}"] is not None else "n/a"
+                        for n in (5, 3, 1)
+                    )
+                    + f" · Rising scores without a DE-RISK destination: "
+                    f"{alarm['rising_score_without_de_risk_destination']}/"
+                    f"{alarm['rising_score_origins']}"
+                    + f" · {horizon}D false alarms above 0.50: "
+                    f"{alarm['false_alarms']}/{alarm['alerts']}"
+                )
+            st.caption(
+                "Full report includes classwise reliability bins, fold and era comparisons, "
+                "transition frequencies, confusion matrices, coefficients, and provenance."
+            )
+            st.download_button(
+                "Download research gate report",
+                data=report_text, file_name="regime-outlook-research.md",
+                mime="text/markdown", width="stretch",
+            )
