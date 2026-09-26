@@ -98,14 +98,17 @@ class RegimeOutlookLabTests(unittest.TestCase):
             self.assertTrue(np.allclose(matrix.sum(axis=1), 1))
 
     def test_common_oos_and_calibration_report_are_snapshot_locked(self):
+        archived = next((ROOT / "research" / "regime_outlook").glob("*/manifest.json"))
+        archive_manifest = json.loads(archived.read_text())
+        archive_id = archive_manifest["signal_snapshot_id"]
         report, markdown = load_shadow_report(
             ROOT / "research" / "regime_outlook",
-            self.bundle.signal_snapshot_id, self.bundle.latest["data_snapshot_id"], self.source,
+            archive_id, archive_manifest["input_snapshot_id"], self.source,
         )
         self.assertIn("NOT VALIDATED / NOT FOR PORTFOLIO ACTION", markdown)
         self.assertFalse(report["reconstruction"]["source_vintage_gate_pass"])
         prediction_path = (ROOT / "research" / "regime_outlook"
-                           / self.bundle.signal_snapshot_id / "oos_predictions.csv")
+                           / archive_id / "oos_predictions.csv")
         predictions = pd.read_csv(prediction_path)
         for horizon in HORIZONS:
             subset = predictions.loc[predictions["horizon"] == horizon]
@@ -127,7 +130,7 @@ class RegimeOutlookLabTests(unittest.TestCase):
                              "INSUFFICIENT EVIDENCE")
         with self.assertRaises((FileNotFoundError, ValueError)):
             load_shadow_report(
-                ROOT / "research" / "regime_outlook", "unrelated-snapshot",
+                ROOT / "research" / "regime_outlook", self.bundle.signal_snapshot_id,
                 self.bundle.latest["data_snapshot_id"], self.source,
             )
 

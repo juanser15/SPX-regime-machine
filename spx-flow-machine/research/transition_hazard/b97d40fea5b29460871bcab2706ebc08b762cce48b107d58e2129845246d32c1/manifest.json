@@ -1,0 +1,14 @@
+{
+  "files": {
+    "de_risk_entry_leads.csv": "96efdbe5c8a6bb57a60e3cd9aa7f2e1ff5b09c340a72e7cbc4bb8791a9c9a628",
+    "oos_predictions.csv": "a52d9770f8ff89a00d45c5e1af668673be383b965248a5d96c0687b6e3b003c8",
+    "report.json": "0e1c0ec68e5b615bed1b27fc50db15d949cbb194be8565e2bf0efbc4eab1c6b1",
+    "report.md": "8abc7f862931542057e82fae09775bd81c329298a193e38eafa8a2391ecdfa7a",
+    "research_states.csv": "6f3b570256eb44c0ef9e82bf54ab35fe5e6abe9f80afab2ab41faccf4515fd52"
+  },
+  "input_snapshot_id": "b6a8cc29cc6fcc9d1da7b26491b7b8a8ee0fa5725d4a89a693a7038a9eb6fa07",
+  "signal_snapshot_id": "b97d40fea5b29460871bcab2706ebc08b762cce48b107d58e2129845246d32c1",
+  "source_canonical_sha256": "a0d5d581d46b745ae95dabdd82fddb9678310bd1f19cf77e3e31904f73ce8c40",
+  "source_signal_sha256": "8340c870b55286c21821be2dd1f8f29af66c5fd3f2f9935b1ef7462a76d9aaaa",
+  "status": "TRANSITION RESEARCH / SHADOW ONLY"
+}
